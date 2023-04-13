@@ -5,6 +5,7 @@ Script for DaVinci Resolve to import and sync audio and video from the 101
 Version tested in parenthesis
 * DaVinci Resolve Studio (18.1 build 16)
 * Python (3.10.10)
+* PyUSB
 
 ## Installation
 * Clone or copy the script to the folder
@@ -18,3 +19,12 @@ Version tested in parenthesis
 
 ## Description
 The script is available through the menu `Workspace -> Scripts -> Comp -> VRDreplay -> Import_VRD`. Invoking the script will automatically locate the VRD disk connected to the USB adapter and create a new project with a timeline containing all the recordings. If there is a significant period without recordings (multiple sorties) additional timelines will be created.
+
+## Programming reference
+While writing this script, the following references have been used (not an exhaustive list)
+* [Unofficial DaVinci Resolve Scripting Documentation](https://deric.github.io/DaVinciResolve-API-Docs/)
+* [ResolveDevDoc’s documentation](https://resolvedevdoc.readthedocs.io/en/latest/index.html)
+* C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\Developer\Scripting\README.txt
+* [basuke/create-vlog-project.py](https://gist.github.com/basuke/908ed2b0f41d9d995f7955d3cebfb9ae)
+* [Info on how to set timeline framerate](https://forum.blackmagicdesign.com/viewtopic.php?f=21&t=150093)
+* [Discussion on placing clips on specific place in timeline (trackIndex and recordFrame)](https://forum.blackmagicdesign.com/viewtopic.php?f=21&t=113040)
