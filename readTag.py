@@ -1,9 +1,5 @@
 import datetime
-
-#F:\AW101\Disk1\vrd_database
-#tagfilename = "G:/VRD Dump/2023-03-07 MPDLS i skred/vrd_database/EO_ACT/EO_ACT_0000/EO_ACT_0000_014/EO_ACT_0000_014.tag"
-tagfilename =                        "F:/AW101/Disk1/vrd_database/EO_ACT/EO_ACT_0000/EO_ACT_0000_013/EO_ACT_0000_013.tag"
-#tagfilename = "G:/VRD Dump/2023-03-07 MPDLS i skred/vrd_database/EO_OPP/EO_OPP_0000/EO_OPP_0000_022/EO_OPP_0000_022.tag"
+import prefs
 
 class Frame:
     frameTime: float
@@ -13,16 +9,50 @@ class Frame:
     frameFF : int
     unixTime: int
     nanosec: int
-    nanoTime: float
-    duration: float
+    nanoTime: int
+    ms_since_last_frame: float
     data: list[int]
 
     def __init__(self) -> None:
         self.data = []
+        self.ms_since_last_frame = -1
+
+
+    def __str__(self) -> str:
+        result = (str(self.frameNumber) + '\t' +
+                  "%d:%02d:%02d" % (self.frameMM, self.frameSS, self.frameFF) + '\t' +
+                  "%d" % self.nanoTime + '\t' +
+                  "%.2f" % self.ms_since_last_frame)
+        return result
+ 
+class SubClip:
+    startFrame : int
+    endFrame : int
+    recordFrameFirst : int
+    clipFirstFrame : int
+
+    @property
+    def frameCount(self) -> int:
+        return self.endFrame - self.startFrame + 1
+    
+    @property
+    def recordFrameLast(self) -> int:
+        return self.recordFrameFirst + self.frameCount - 1
+    
+    def __init__(self, clipFirstFrame, startFrame, endFrame, recordFrameFirst) -> None:
+        self.clipFirstFrame = clipFirstFrame
+        self.startFrame = startFrame
+        self.endFrame = endFrame
+        self.recordFrameFirst = recordFrameFirst
+
+    def __str__(self) -> str:
+        result = ("%d" % self.startFrame + '\t' +
+                  "%d" % self.endFrame + '\t' +
+                  "%d" % self.recordFrame )
+        return result
 
 
 
-frames: list[Frame] = []
 
 import time
 #Instrumentation of code
@@ -32,89 +62,110 @@ import time
 
 
 
-
-#Read the tag-file into the list of frames
-with open(tagfilename, 'r') as fileobject:
-    while True:
-        try:
-            str_frameTime = next(fileobject)
-            str_unixtime  = next(fileobject)
-            str_nanosec   = next(fileobject)
-            str_dataLines = next(fileobject)
-
-            frame = Frame()
-
-            #Convert Time of frame from string to an integer. Rounding is due to floating point accuracy issues
-            frame.frameTime = float( str_frameTime )
-            frame.frameNumber = int(round( frame.frameTime * 25, 0 ))
-
-            #Convert frame number to minutes:seconds:frames
-            ss, ff = divmod(frame.frameNumber+1, 25)   #+1 one because next frame is the one that needs to be removed.
-            mm, ss = divmod(ss, 60)
-
-            frame.frameMM = mm
-            frame.frameSS = ss
-            frame.frameFF = ff
+def ReadTag(tagFile:str, trackType:prefs.TrackType) -> list[SubClip]:
+    frames: list[Frame] = []
+    #Read the tag-file into the list of frames
+    with open(tagFile, 'r') as fileobject:
+        while True:
+            try:
+                str_frameTime = next(fileobject)
+                str_unixtime  = next(fileobject)
+                str_nanosec   = next(fileobject)
+                
+                #Only video .tag files have additional datalines
+                if trackType == prefs.TrackType.VIDEO:
+                    str_dataLines = next(fileobject)
+                else:
+                    str_dataLines = "0"
 
 
-            unixtime = int( str_unixtime )
-            nanosec  = int( str_nanosec )
+                frame = Frame()
 
-            frame.nanoTime = unixtime * 1e9 + nanosec
+                #Convert Time of frame from string to an integer. Rounding is due to floating point accuracy issues
+                frame.frameTime = float( str_frameTime )
+                frame.frameNumber = int(round( frame.frameTime * 25, 0 ))
 
-            #Read through the lines with additional data 
-            NumberOfDataLines = int(str_dataLines)
-            for dLine in range(NumberOfDataLines):
-                str_DataLine = next(fileobject)
-                #frame.data.append( str_DataLine )   #For now, discard the datalines.
+                #Convert frame number to minutes:seconds:frames
+                ss, ff = divmod(frame.frameNumber, 25)   #TODO REMOVE THIS COMMENT +1 one because next frame is the one that needs to be removed.
+                mm, ss = divmod(ss, 60)
 
-            #frames.append(frame)
-        except StopIteration:
-            break
-        except:
-            print("Something else went wrong")
+                frame.frameMM = mm
+                frame.frameSS = ss
+                frame.frameFF = ff
 
 
-#Calculate frame durations
-for i in range(len(frames)-1):
-    frameTimeThis = frames[i].nanoTime
-    frameTimeNext = frames[i+1].nanoTime
+                frame.unixTime = int( str_unixtime )
+                frame.nanosec  = int( str_nanosec )
+
+                frame.nanoTime = frame.unixTime * 1e9 + frame.nanosec
+
+                #Read through the lines with additional data 
+                NumberOfDataLines = int(str_dataLines)
+                for dLine in range(NumberOfDataLines):
+                    str_DataLine = next(fileobject)
+                    #frame.data.append( str_DataLine )   #For now, discard the datalines.
+
+                frames.append(frame)
+            except StopIteration:
+                break
+            except Exception as e:
+                print(f"This didn't go as well: {str(e)}")
+
+
+    #Calculate frame durations
+    frames[0].ms_since_last_frame = float('inf') #Set first frame to infinite duration
+
+    for i in range(1,len(frames)):
+        frameTimeThis = frames[i-1].nanoTime
+        frameTimeNext = frames[i].nanoTime
+        
+        ms = (frameTimeNext - frameTimeThis) / 1e6
+        frames[i].ms_since_last_frame = round(ms, 2)
     
-    ms = (frameTimeNext - frameTimeThis) / 1e6
-    frames[i].duration = round(ms, 2)
 
-frames[len(frames)-1].duration = float('inf')
-
-
-#Extract the frames with duration below 20ms
-abc = [x for x in frames if x.duration < 20]
-
-print()
-print()
-print('*********************************************')
-print('The frames with duration less than 20 ms are:')
-print(tagfilename)
-print('*********************************************')
-print()
-print('Frame\tTimeCode\tDuration (ms)')
-print('----------------------------------------------')
-
-for f in abc:
-    tc = "%d:%02d:%02d" % (f.frameMM, f.frameSS, f.frameFF)
-    print(f'{f.frameNumber}\t{tc}\t\t{f.duration}')
-
-clipDuration = (frames[len(frames)-1].nanoTime - frames[0].nanoTime) / 1e9
-clipDurationFrames = 25 * clipDuration
-
-ss, ff = divmod(clipDurationFrames, 25)
-mm, ss = divmod(clipDuration, 60)
-print()
-print(f'The clip duration is %01d:%02d:%02d' % (mm, ss, ff))
-print(f'The number of frames are:\t{len(frames)}')
-print()
-print()
+    #Extract the frames with duration below 20ms
+    missingFrames = [x for x in frames if x.ms_since_last_frame < 20]
 
 
+    subClip : SubClip
+    subClips : list[SubClip]
+    subClips = []
+    
+    clipStartUnixTime = datetime.datetime.utcfromtimestamp(frames[0].unixTime).time()
+    clipStartSecInteger = (clipStartUnixTime.hour * 3600 +
+                           clipStartUnixTime.minute * 60 +
+                           clipStartUnixTime.second)
+    clipStartSec = clipStartSecInteger + frames[0].nanosec / 1e9
+    clipFirstFrame = int(round(clipStartSec * 25, 0))
 
-startTime1 = frames[0].nanoTime
+    previousEndFrame = -1
+    recordFrameFirst = 0
 
+    for frame in missingFrames:
+        subClip = SubClip(clipFirstFrame = clipFirstFrame, 
+                          startFrame = previousEndFrame + 1,  #Startframe is inclusive)
+                          endFrame = frame.frameNumber - 1,
+                          recordFrameFirst = recordFrameFirst)  
+
+        recordFrameFirst = recordFrameFirst + subClip.frameCount
+        previousEndFrame = subClip.endFrame + 1  #The +1 will skip the bad frame
+        
+        subClips.append(subClip)
+
+    # Add a subclip at the end (if no missing frames this will be the only one added)
+    frame = frames[-1]
+    subClip = SubClip(clipFirstFrame, 
+                      previousEndFrame + 1,  #Startframe is inclusive)
+                      frame.frameNumber,
+                      recordFrameFirst)
+    
+    subClips.append(subClip)
+    
+    return subClips
+
+
+
+if __name__ == "__main__":
+    tagfilename = r"F:\AW101\\tempCopy\\MCC_0000_000\\MCC_0000_000.tag"
+
+    subClips = ReadTag(tagfilename)

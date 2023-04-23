@@ -1,51 +1,3 @@
-# import os
-# import sys
-# import datetime
-# from glob import glob
-# from argparse import ArgumentParser
-
-# # settings
-
-# projectNamePrefix = "vrd-"
-# presetName = "Default" # You have to define this preset by your self. <----
-# mediaDirectories = [
-#     r"G:\Vlog\ZV1-64GB-1", # Change these directories to your locations. <----
-#     r"G:\Vlog\GoPro Black 7",
-#     r"G:\Vlog\WebCam HD",
-#     r"G:\Vlog\Captured Screen",
-# ]
-# mediaExtensions = [
-#     "mkv", # in lowercase
-#     #"mp4",
-#     #"mov",
-# ]
-# markerColor = "Yellow"
-
-
-
-
-
-
-# import DaVinciResolveScript as dvr_script
-
-
-
-
-# TESTFILE = "C:/Windows/SystemResources/Windows.UI.SettingsAppThreshold/SystemSettings/Assets/SDRSample.mkv"
-
-
-# resolve = dvr_script.scriptapp("Resolve")
-# fusion = resolve.Fusion()
-# projectManager = resolve.GetProjectManager()
-# #projectManager.CreateProject("Hello World")
-
-
-# project = projectManager.GetCurrentProject()
-# mediapool = project.GetMediaPool()
-
-
-
-
 import prefs
 from getAllMedia import GetAllMedia
 
@@ -67,22 +19,12 @@ import sys
 import datetime
 from glob import glob
 from argparse import ArgumentParser
-
+import readTag
+from fixMkvDuration import fixMkvDuration
 # settings
 
 presetName = "Default" # You have to define this preset by your self. <----
-# mediaDirectories = [
-#     "G:\\", # Change these directories to your locations. <----
-#     #r"G:\VRD Dump\2023-02-16 0264", # Change these directories to your locations. <----
-#     #r"G:\VRD Dump\2023-02-16 0264\vrd_database\MCC\MCC_0000\MCC_0000_000",
-#     # r"G:\Vlog\WebCam HD",
-#     # r"G:\Vlog\Captured Screen",
-# ]
-# mediaExtensions = [
-#     "mkv", # in lowercase
-#     "mp4", 
-#     "mov",
-# ]
+
 markerColor = "Yellow"
 
 # customization point
@@ -143,6 +85,42 @@ RESOLVE_SCRIPT_LIB = os.path.join(*[
 
 # actions
 
+def createNewTimeline(mediaPool, name, unixStartTime:int):
+        dtStartTime = datetime.datetime.utcfromtimestamp(unixStartTime)
+
+        startTimecode = dtStartTime.strftime('%H:%M:%S') + ':00'
+
+        timeline = mediaPool.CreateEmptyTimeline(name)
+        result = timeline.SetSetting("useCustomSettings", "1")
+        if not result:
+           print("Unable to set custom settings")
+        result = timeline.SetSetting("timelineFrameRate", "25")
+        if not result:
+           print("Unable to set framerate")
+
+        timeline.SetStartTimecode(startTimecode)
+        
+        timeline.AddTrack("video")
+        timeline.AddTrack("video")
+        timeline.AddTrack("video")
+        timeline.AddTrack("audio", "stereo")
+        timeline.AddTrack("audio", "stereo")
+        timeline.AddTrack("audio", "stereo")
+
+        timeline.SetTrackName("video", prefs.MCC_TRACK[0], prefs.MCC_TRACK[1])
+        timeline.SetTrackName("video", prefs.EO_OPP_TRACK[0], prefs.EO_OPP_TRACK[1])
+        timeline.SetTrackName("video", prefs.EO_ACT_TRACK[0], prefs.EO_ACT_TRACK[1])
+        timeline.SetTrackName("video", prefs.QUAD_TRACK[0], prefs.QUAD_TRACK[1])
+        
+        timeline.SetTrackName("audio",prefs.PILOT_TRACK[0], prefs.PILOT_TRACK[1])
+        timeline.SetTrackName("audio",prefs.COPILOT_TRACK[0], prefs.COPILOT_TRACK[1])
+        timeline.SetTrackName("audio",prefs.SO_TRACK[0], prefs.SO_TRACK[1])
+        timeline.SetTrackName("audio",prefs.FE_TRACK[0], prefs.FE_TRACK[1])
+
+        return timeline
+
+
+
 def createProject(memo=None):
     today = datetime.date.today().isoformat()
     name = prefs.PROJECT_NAME_PREFIX + str(today)
@@ -161,129 +139,74 @@ def createProject(memo=None):
         proj.SetSetting('perfOptimisedMediaOn', 0)
         proj.SetSetting('perfProxyMediaMode', 0)
 
-
         allMedia = GetAllMedia()
-
-        # mediaList = []
-        # for media in allMedia:
-        #     mediaList.append(media.mediaFile)
-
-        # mediaStorage.AddItemListToMediaPool(mediaList) 
-
-
-        # for item in mediaList:
-        #     print(item)
-
-
-        i=0
-        import time
-        print("Starting import")
-        t0 = time.perf_counter()
-        #mediaList_In_MediaPool = mediaStorage.AddItemListToMediaPool(mediaList)
-        for media in allMedia:
-            i = i+1
-            print(i)
-            mediaStorage.AddItemListToMediaPool(media.mediaFile)
-
-        t1 = time.perf_counter()
-        print("Import complete")
-        duration = t1-t0
-        print("The import took %.1f seconds" % duration)
-
-
-
-
-
-
+        fixMkvDuration(allMedia)
 
         mediaPool = proj.GetMediaPool()
+
+
+
+
+
+        i=0                      #Progress used for debugging
+        print("Starting import") #Progress used for debugging
+        import time              #Instrumentation
+        t0 = time.perf_counter() #Instrumentation
         
-        timeline = mediaPool.CreateEmptyTimeline("test")
-        result = timeline.SetSetting("useCustomSettings", "1")
-        if not result:
-            print("Unable to set custom settings")
-        result = timeline.SetSetting("timelineFrameRate", "25")
-        if not result:
-            print("Unable to set framerate")
-
-        timeline.AddTrack("video")
-        timeline.AddTrack("video")
-        timeline.AddTrack("video")
-        timeline.AddTrack("audio", "stereo")
-        timeline.AddTrack("audio", "stereo")
-        timeline.AddTrack("audio", "stereo")
-
-        timeline.SetTrackName("video", prefs.MCC_TRACK[0], prefs.MCC_TRACK[1])
-        timeline.SetTrackName("video", prefs.EO_OPP_TRACK[0], prefs.EO_OPP_TRACK[1])
-        timeline.SetTrackName("video", prefs.EO_ACT_TRACK[0], prefs.EO_ACT_TRACK[1])
-        timeline.SetTrackName("video", prefs.QUAD_TRACK[0], prefs.QUAD_TRACK[1])
         
-        timeline.SetTrackName("audio",1,"Pilot")
-        timeline.SetTrackName("audio",2,"2P")
-        timeline.SetTrackName("audio",3,"SO")
-        timeline.SetTrackName("audio",4,"FE")
+        subClips: list[readTag.SubClip]
+        
+        timeLineCounter = 0
+        timeLineStartFrame = 0
+        
+        for media in allMedia:
 
-
-
-
-
-
-
-
-
-        # for media in mediaList:
+            if media.startOfTimeline:
+                timeLineCounter = timeLineCounter + 1
+                
+                dtStartTime : datetime.datetime
+                dtStartTime = datetime.datetime.utcfromtimestamp(media.startTime)
+                timeLineStartFrame = 25 * (dtStartTime.hour * 3600 +
+                                           dtStartTime.minute * 60 +
+                                           dtStartTime.second) 
+                name = "Sortie " + str(timeLineCounter)
+                timeline = createNewTimeline(mediaPool, name, media.startTime)
+                proj.SetCurrentTimeline(timeline)
+                
             
-        #     for m in mediaList:
-        #         #print(m.GetMediaId())
-        #         pass
-
-        #     # for media in mediaList:
-        #     #     modifyMedia(media)
-
-        #     # pos = timeline.GetEndFrame() - timeline.GetStartFrame()
-        #     # timeline.AddMarker(pos, markerColor, path, "", 1)
-
-        #     # mediaPool.AppendToTimeline(mediaList)
-
-        #     # clips = timeline.GetItemListInTrack('video', 1)
-        #     # if clips:
-        #     #     clipStart = clipCount
-        #     #     clipCount += len(mediaList)
-
-        #     #     for clip in clips[clipStart:clipCount]:
-        #     #         modifyClip(clip)
+            medieaPoolItem = mediaStorage.AddItemListToMediaPool(media.mediaFile)
 
 
-        #     newClip = {
-        #         "mediaPoolItem" : media,
-        #         "startFrame" : 1500,
-        #         "endFrame" : 2500,
-        #         "trackIndex" : 1,
-        #         "recordFrame" : 90000,
-        #     }
-        #     a = mediaPool.AppendToTimeline( [newClip] )
+            #if media.trackType == prefs.TrackType.VIDEO:
+            print("Filename".ljust(53) + '\t' + "trackIndex" + '\t' + "Timeline start" + '\t' + "startFrame" + '\t' + "endFrame" + '\t' + "frameCount" + '\t' + "Timeline end")
+            print("----------------------------------------------------------------------------------------------------------------------------------------------------")
+            for subClip in media.subClips:
+                newClip = {
+                    "mediaPoolItem" : medieaPoolItem[0],                                 #The media file to be inserted
+                    "trackIndex" : media.trackNumber,                                    #Track to insert the media in
+                    "startFrame" : subClip.startFrame,                                   #The first frame in the media to be used
+                    "endFrame" : subClip.endFrame,                                       #The last frame in the media to be used
+                    "recordFrame" : subClip.clipFirstFrame + subClip.recordFrameFirst,   #The timeline location (in frames) to insert the clip at
+                    "recordFrameEnd" :  subClip.clipFirstFrame + subClip.recordFrameLast #For debugging. The last frame on the timeline occupied by the clip
+                }
+                print(media.tagFile + '\t' +
+                        str(newClip["trackIndex"]).ljust(10) + '\t' + 
+                        str(newClip["recordFrame"]).ljust(14) + '\t' + 
+                        str(newClip["startFrame"]).ljust(10) + '\t' + 
+                        str(newClip["endFrame"]).ljust(8) + '\t' + 
+                        str(subClip.frameCount).ljust(10) + '\t' +
+                        str(newClip["recordFrameEnd"]).ljust(12))
+                mediaPool.AppendToTimeline( [newClip] )
+            print()
+            print()
 
-        #     newClip = {
-        #         "mediaPoolItem" : mediaList[2],
-        #         "startFrame" : 3500,
-        #         "endFrame" : 4500,
-        #         "trackIndex" : 2,
-        #         "recordFrame" : 90025,
-        #     }
-        #     b = mediaPool.AppendToTimeline( [newClip] )
 
-
-        #     newClip = {
-        #         "mediaPoolItem" : mediaList[2],
-        #         "startFrame" : 500,
-        #         "endFrame" : 1000,
-        #         "trackIndex" : 4,
-        #         "recordFrame" : 90250,
-        #     }
-        #     mediaPool.AppendToTimeline( [newClip] )      
-
-        #     a=timeline.GetItemListInTrack("video",3)
-        #     print(a[0].GetName()) 
+        
+        
+        t1 = time.perf_counter()  #Instrumentation
+        print("Import complete")  #Progress used for debugging
+        duration = t1-t0          #Instrumentation
+        print("The import took %.1f seconds" % duration) #Instrumentation
 
     return proj
 
