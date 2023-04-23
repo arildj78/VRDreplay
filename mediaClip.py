@@ -1,4 +1,5 @@
 import os
+from readTag import SubClip
 
 #Class to hold information on a single clip beeing imported
 class MediaClip:
@@ -11,6 +12,7 @@ class MediaClip:
     stopTime : int
     startOfTimeline : bool
     timelineNumber : int
+    subClips : list[SubClip]
 
     @property
     def duration_sec(self):
