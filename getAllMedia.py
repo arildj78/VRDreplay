@@ -6,6 +6,7 @@ import prefs
 from prefs import TrackType
 
 from mediaClip import MediaClip
+from readTag import ReadTag
 import reverseRead
 
 
@@ -40,10 +41,10 @@ def get_clip_start_stop_time(tagFile:str):
 
 
 
-def GetAllMedia():
+def GetAllMedia() -> list[MediaClip]:
 
     #Initialize an empty list to hold a reference to the media files beeing imported
-    mediaFiles = []
+    mediaFiles: list[MediaClip] = []
 
     #Create regex objects to identify the files to import
     regex_eo_act = re.compile(prefs.EO_ACT_MKV_FILENAME_REGEX)
@@ -51,33 +52,75 @@ def GetAllMedia():
     regex_mcc    = re.compile(prefs.MCC_MKV_FILENAME_REGEX)
     regex_quad   = re.compile(prefs.OPLS_XCS_QUAD_MKV_FILENAME_REGEX)
 
+    regex_pilot   = re.compile(prefs.PILOT_MKV_FILENAME_REGEX)
+    regex_copilot = re.compile(prefs.COPILOT_MKV_FILENAME_REGEX)
+    regex_so      = re.compile(prefs.SO_MKV_FILENAME_REGEX)
+    regex_fe      = re.compile(prefs.FE_MKV_FILENAME_REGEX)
+
 
     #Look through all directories and subdirectories for all files and process them
     for dir in prefs.RECORDING_DIRECTORIES:
         for root, dirs, files in os.walk(dir):
             for file in files:
                 trackNumber = -1    #If the file beeing processed is a media file, this will get a valid number
-                
+                trackType = "None"
+
+                #***********************
+                #     VIDEO TRACKS
+                #***********************
                 #Check if file is a EO Active file
                 if regex_eo_act.match(file):
                     trackNumber = prefs.EO_ACT_TRACK[0]
                     trackName = prefs.EO_ACT_TRACK[1]
+                    trackType = prefs.TrackType.VIDEO
 
                 #Check if file is a EO Opposite file
                 if regex_eo_opp.match(file):
                     trackNumber = prefs.EO_OPP_TRACK[0]
                     trackName = prefs.EO_OPP_TRACK[1]
+                    trackType = prefs.TrackType.VIDEO
                 
                 #Check if file is a MCC file
                 if regex_mcc.match(file):
                     trackNumber = prefs.MCC_TRACK[0]
                     trackName = prefs.MCC_TRACK[1]
+                    trackType = prefs.TrackType.VIDEO
                 
                 #Check if file is a Quad file
                 if regex_quad.match(file):
                     trackNumber = prefs.QUAD_TRACK[0]
                     trackName = prefs.QUAD_TRACK[1]
-                    
+                    trackType = prefs.TrackType.VIDEO
+
+
+                #***********************
+                #     AUDIO TRACKS
+                #***********************
+                #Check if file is a EO Active file
+                if regex_pilot.match(file):
+                    trackNumber = prefs.PILOT_TRACK[0]
+                    trackName = prefs.PILOT_TRACK[1]
+                    trackType = prefs.TrackType.AUDIO
+
+                #Check if file is a EO Opposite file
+                if regex_copilot.match(file):
+                    trackNumber = prefs.COPILOT_TRACK[0]
+                    trackName = prefs.COPILOT_TRACK[1]
+                    trackType = prefs.TrackType.AUDIO
+                
+                #Check if file is a MCC file
+                if regex_so.match(file):
+                    trackNumber = prefs.SO_TRACK[0]
+                    trackName = prefs.SO_TRACK[1]
+                    trackType = prefs.TrackType.AUDIO
+                
+                #Check if file is a Quad file
+                if regex_fe.match(file):
+                    trackNumber = prefs.FE_TRACK[0]
+                    trackName = prefs.FE_TRACK[1]
+                    trackType = prefs.TrackType.AUDIO
+
+
                 
                 #if the file is a mediafile, process it
                 if trackNumber >= 0:
@@ -95,9 +138,11 @@ def GetAllMedia():
                     
                     mc.mediaFile = mkvFile
                     mc.tagFile = tagFile
-                    mc.trackType = TrackType.VIDEO
+                    mc.trackType = trackType
                     mc.trackName = trackName
                     mc.trackNumber = trackNumber
+
+                    mc.subClips = ReadTag(mc.tagFile, mc.trackType)
                     mediaFiles.append(mc)
                     
                     
