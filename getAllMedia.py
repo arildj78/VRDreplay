@@ -11,7 +11,7 @@ import reverseRead
 
 
 
-#Read start time from start of tag file and stop time from end of taf file
+#Read start time from start of tag file and stop time from end of tag file
 def get_clip_start_stop_time(tagFile:str):
     startTime = 0
     stopTime = 0
