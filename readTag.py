@@ -30,7 +30,21 @@ class SubClip:
     endFrame : int
     recordFrameFirst : int
     clipFirstFrame : int
+    startUnixTime : int
+    startNanoSec : int
+    
+    @property
+    def StartSec(self) -> float:
+        return self.startUnixTime + self.startNanoSec/1e9
+    
+    @property
+    def EndSec(self) -> float:
+        return self.StartSec + self.frameCount / self.framerate
 
+    @property
+    def frameCount(self) -> int:
+        return self.endFrame - self.startFrame
+    
     @property
     def frameCount(self) -> int:
         return self.endFrame - self.startFrame + 1
@@ -39,11 +53,14 @@ class SubClip:
     def recordFrameLast(self) -> int:
         return self.recordFrameFirst + self.frameCount - 1
     
-    def __init__(self, clipFirstFrame, startFrame, endFrame, recordFrameFirst) -> None:
+    def __init__(self, clipFirstFrame, startFrame, endFrame, recordFrameFirst, startUnixTime, startNanoSec) -> None:
+        self.framerate = 25
         self.clipFirstFrame = clipFirstFrame
         self.startFrame = startFrame
         self.endFrame = endFrame
         self.recordFrameFirst = recordFrameFirst
+        self.startUnixTime = startUnixTime
+        self.startNanoSec = startNanoSec
 
     def __str__(self) -> str:
         result = ("%d" % self.startFrame + '\t' +
@@ -142,10 +159,12 @@ def ReadTag(tagFile:str, trackType:prefs.TrackType) -> list[SubClip]:
     recordFrameFirst = 0
 
     for frame in missingFrames:
-        subClip = SubClip(clipFirstFrame = clipFirstFrame, 
+        subClip = SubClip(clipFirstFrame = clipFirstFrame,  
                           startFrame = previousEndFrame + 1,  #Startframe is inclusive)
                           endFrame = frame.frameNumber - 1,
-                          recordFrameFirst = recordFrameFirst)  
+                          recordFrameFirst = recordFrameFirst,
+                          startUnixTime = frame.unixTime,
+                          startNanoSec = frame.nanosec)  
 
         recordFrameFirst = recordFrameFirst + subClip.frameCount
         previousEndFrame = subClip.endFrame + 1  #The +1 will skip the bad frame
@@ -157,7 +176,9 @@ def ReadTag(tagFile:str, trackType:prefs.TrackType) -> list[SubClip]:
     subClip = SubClip(clipFirstFrame, 
                       previousEndFrame + 1,  #Startframe is inclusive)
                       frame.frameNumber,
-                      recordFrameFirst)
+                      recordFrameFirst,
+                      startUnixTime = frame.unixTime,
+                      startNanoSec = frame.nanosec)                        
     
     subClips.append(subClip)
     

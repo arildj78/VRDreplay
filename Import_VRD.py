@@ -21,11 +21,19 @@ from glob import glob
 from argparse import ArgumentParser
 import readTag
 from fixMkvDuration import fixMkvDuration
+from timeline import Timeline
 # settings
+
+# *******************************
+# GLOBAL VARIABLES
+# *******************************
 
 presetName = "Default" # You have to define this preset by your self. <----
 
 markerColor = "Yellow"
+
+timelines : list[Timeline]
+timelines = []
 
 # customization point
 
@@ -169,9 +177,16 @@ def createProject(memo=None):
                 timeLineStartFrame = 25 * (dtStartTime.hour * 3600 +
                                            dtStartTime.minute * 60 +
                                            dtStartTime.second) 
-                name = "Sortie " + str(timeLineCounter)
-                timeline = createNewTimeline(mediaPool, name, media.startTime)
-                proj.SetCurrentTimeline(timeline)
+                name = dtStartTime.strftime("%Y-%m-%d %H:%M:%S")
+
+                
+                tl = Timeline(createNewTimeline(mediaPool, name, media.startTime))
+                tl.startTime = media.subClips[0].StartSec
+                tl.endTime = media.subClips[-1].EndSec
+                tl.name = name
+
+                proj.SetCurrentTimeline(tl.timeline)
+                timelines.append(tl)
                 
             
             medieaPoolItem = mediaStorage.AddItemListToMediaPool(media.mediaFile)
