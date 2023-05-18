@@ -67,3 +67,4 @@ FE_TAG_FILENAME_REGEX     = 'FE_CAP_[0-9]{4}_[0-9]{3}.[T,t][A,a][G,g]$'
 
 
 EXCEPTION_MSG_DURATION_ERROR = "The video file does not have it's duration in position 0x160. This suggests that this is not a video file or that the format has been changed."
+EXCEPTION_MSG_MISSING_TAG_FILE = "The .tag file is missing, and handling of this has not been implemented yet."
