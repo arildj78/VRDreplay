@@ -21,6 +21,7 @@ from glob import glob
 from argparse import ArgumentParser
 import readTag
 from fixMkvDuration import fixMkvDuration
+from fixTagWrongStartTime import fixTagWrongStartTime
 from timeline import Timeline
 # settings
 
@@ -164,6 +165,7 @@ def createProject(memo=None):
 
         allMedia = GetAllMedia()
         fixMkvDuration(allMedia)
+        fixTagWrongStartTime(allMedia)
 
         mediaPool = proj.GetMediaPool()
 
