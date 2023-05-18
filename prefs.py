@@ -62,8 +62,14 @@ FE_MKV_FILENAME_REGEX     = 'FE_CAP_[0-9]{4}_[0-9]{3}.[M,m][K,k][V,v]$'
 FE_TAG_FILENAME_REGEX     = 'FE_CAP_[0-9]{4}_[0-9]{3}.[T,t][A,a][G,g]$'
 
 
+#*********************
+#   USB identifiers
+#*********************
+USB_VRD_VENDOR_ID = 0xffff
+USB_VRD_PRODUCT_ID = 0xffff
 
-
+USB_EXTERNAL_DRIVE_VENDOR_ID = 0x0bc2
+USB_EXTERNAL_DRIVE_PRODUCT_ID = 0x0200c
 
 
 EXCEPTION_MSG_DURATION_ERROR = "The video file does not have it's duration in position 0x160. This suggests that this is not a video file or that the format has been changed."
