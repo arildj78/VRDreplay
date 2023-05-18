@@ -146,7 +146,7 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
 
 
 def createProject(memo=None):
-    today = datetime.now().strftime('%Y-%m-%d %H.%M.%S')
+    today = datetime.datetime.now().strftime('%Y-%m-%d %H.%M.%S')
     name = prefs.PROJECT_NAME_PREFIX + today
     if memo:
         name += '-%s' % memo
