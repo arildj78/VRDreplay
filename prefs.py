@@ -7,9 +7,9 @@ PKG = __package__
 TAGFILE_LINES_TO_SCAN_FROM_END_TO_FIND_STOPTIME = 200
 EMPTY_SECONDS_BEFORE_NEW_TIMELINE = 60
 
-MCC_TRACK = (4, "MCC")
-EO_ACT_TRACK = (3, "EO Active")
-EO_OPP_TRACK = (2, "EO Opposite")
+EO_ACT_TRACK = (4, "EO Active")
+EO_OPP_TRACK = (3, "EO Opposite")
+MCC_TRACK = (2, "MCC")
 QUAD_TRACK = (1, "Quad")
 
 PILOT_TRACK = (1, "Pilot")
