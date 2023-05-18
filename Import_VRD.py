@@ -44,7 +44,20 @@ def modifyProject(proj):
     media: Project
     """
     # first thing first. set preset of the project
-    #proj.SetPreset(presetName)
+    result = proj.SetPreset("Debrief")
+    if not result:
+        print("You should create a Project Setting Preset named 'Debrief'")
+    else:
+        print("Debrief loaded")
+
+    a = proj.SetSetting('videoMonitorFormat', 'HD 1080p 25')
+    b = proj.SetSetting('videoDeckFormat', 'HD 1080p 25')   #TODO This setter is broken in DaVinci Resolve 18.1 Build 16
+    c = proj.SetSetting('timelineFrameRate', '25')
+    d = proj.SetSetting('timelinePlaybackFrameRate', '25')  #TODO This setter is broken in DaVinci Resolve 18.1 Build 16
+    e = proj.SetSetting('perfOptimisedMediaOn', '0')
+    f = proj.SetSetting('perfProxyMediaMode', '0')
+
+
 
 
 def modifyMedia(media):
@@ -100,12 +113,12 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         startTimecode = dtStartTime.strftime('%H:%M:%S') + ':00'
 
         timeline = mediaPool.CreateEmptyTimeline(name)
-        result = timeline.SetSetting("useCustomSettings", "1")
-        if not result:
-           print("Unable to set custom settings")
-        result = timeline.SetSetting("timelineFrameRate", "25")
-        if not result:
-           print("Unable to set framerate")
+        #result = timeline.SetSetting("useCustomSettings", "1")
+        #if not result:
+        #   print("Unable to set custom settings")
+        #result = timeline.SetSetting("timelineFrameRate", "25")
+        #if not result:
+        #   print("Unable to set framerate")
 
         timeline.SetStartTimecode(startTimecode)
         
@@ -150,18 +163,12 @@ def createProject(memo=None):
     name = prefs.PROJECT_NAME_PREFIX + today
     if memo:
         name += '-%s' % memo
-
+    
     proj = projectManager.CreateProject(name)
     if proj:
-        #modifyProject(proj)
+        modifyProject(proj)
+        
 
-        proj.SetSetting('videoMonitorFormat', 'HD 1080p 25')
-        proj.SetSetting('videoDeckFormat', 'HD 1080p 25')
-        proj.SetSetting('timelineFrameRate', 25.0)
-        proj.SetSetting('timelinePlaybackFrameRate', '25')
-
-        proj.SetSetting('perfOptimisedMediaOn', 0)
-        proj.SetSetting('perfProxyMediaMode', 0)
 
         allMedia = GetAllMedia()
         fixMkvDuration(allMedia)
@@ -239,7 +246,6 @@ def createProject(memo=None):
         print("Import complete")  #Progress used for debugging
         duration = t1-t0          #Instrumentation
         print("The import took %.1f seconds" % duration) #Instrumentation
-
     return proj
 
 
