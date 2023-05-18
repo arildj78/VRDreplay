@@ -1,6 +1,6 @@
 import os
 
-PROJECT_NAME_PREFIX = "Debrief-"
+PROJECT_NAME_PREFIX = "Debrief "
 
 PKG = __package__
 # Recording directories
