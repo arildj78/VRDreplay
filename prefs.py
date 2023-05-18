@@ -1,15 +1,15 @@
 import os
 
-PROJECT_NAME_PREFIX = "Debrief-"
+PROJECT_NAME_PREFIX = "Debrief "
 
 PKG = __package__
 # Recording directories
 TAGFILE_LINES_TO_SCAN_FROM_END_TO_FIND_STOPTIME = 200
 EMPTY_SECONDS_BEFORE_NEW_TIMELINE = 60
 
-MCC_TRACK = (4, "MCC")
-EO_ACT_TRACK = (3, "EO Active")
-EO_OPP_TRACK = (2, "EO Opposite")
+EO_ACT_TRACK = (4, "EO Active")
+EO_OPP_TRACK = (3, "EO Opposite")
+MCC_TRACK = (2, "MCC")
 QUAD_TRACK = (1, "Quad")
 
 PILOT_TRACK = (1, "Pilot")
@@ -62,8 +62,15 @@ FE_MKV_FILENAME_REGEX     = 'FE_CAP_[0-9]{4}_[0-9]{3}.[M,m][K,k][V,v]$'
 FE_TAG_FILENAME_REGEX     = 'FE_CAP_[0-9]{4}_[0-9]{3}.[T,t][A,a][G,g]$'
 
 
+#*********************
+#   USB identifiers
+#*********************
+USB_VRD_VENDOR_ID = 0xffff
+USB_VRD_PRODUCT_ID = 0xffff
 
-
+USB_EXTERNAL_DRIVE_VENDOR_ID = 0x0bc2
+USB_EXTERNAL_DRIVE_PRODUCT_ID = 0x0200c
 
 
 EXCEPTION_MSG_DURATION_ERROR = "The video file does not have it's duration in position 0x160. This suggests that this is not a video file or that the format has been changed."
+EXCEPTION_MSG_MISSING_TAG_FILE = "The .tag file is missing, and handling of this has not been implemented yet."

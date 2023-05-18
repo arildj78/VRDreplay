@@ -41,7 +41,7 @@ def get_clip_start_stop_time(tagFile:str):
 
 
 
-def GetAllMedia() -> list[MediaClip]:
+def GetAllMedia(directories=prefs.RECORDING_DIRECTORIES) -> list[MediaClip]:
 
     #Initialize an empty list to hold a reference to the media files beeing imported
     mediaFiles: list[MediaClip] = []
@@ -59,7 +59,7 @@ def GetAllMedia() -> list[MediaClip]:
 
 
     #Look through all directories and subdirectories for all files and process them
-    for dir in prefs.RECORDING_DIRECTORIES:
+    for dir in directories:
         for root, dirs, files in os.walk(dir):
             for file in files:
                 trackNumber = -1    #If the file beeing processed is a media file, this will get a valid number
@@ -141,8 +141,11 @@ def GetAllMedia() -> list[MediaClip]:
                     mc.trackType = trackType
                     mc.trackName = trackName
                     mc.trackNumber = trackNumber
-
-                    mc.subClips = ReadTag(mc.tagFile, mc.trackType)
+                    try:
+                        mc.subClips = ReadTag(mc.tagFile, mc.trackType)
+                    except:
+                        # TODO - Handle missing .tag file
+                        raise Exception(prefs.EXCEPTION_MSG_MISSING_TAG_FILE)
                     mediaFiles.append(mc)
                     
                     

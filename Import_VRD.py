@@ -21,6 +21,7 @@ from glob import glob
 from argparse import ArgumentParser
 import readTag
 from fixMkvDuration import fixMkvDuration
+from fixTagWrongStartTime import fixTagWrongStartTime
 from timeline import Timeline
 # settings
 
@@ -43,7 +44,20 @@ def modifyProject(proj):
     media: Project
     """
     # first thing first. set preset of the project
-    #proj.SetPreset(presetName)
+    result = proj.SetPreset("Debrief")
+    if not result:
+        print("You should create a Project Setting Preset named 'Debrief'")
+    else:
+        print("Debrief loaded")
+
+    a = proj.SetSetting('videoMonitorFormat', 'HD 1080p 25')
+    b = proj.SetSetting('videoDeckFormat', 'HD 1080p 25')   #TODO This setter is broken in DaVinci Resolve 18.1 Build 16
+    c = proj.SetSetting('timelineFrameRate', '25')
+    d = proj.SetSetting('timelinePlaybackFrameRate', '25')  #TODO This setter is broken in DaVinci Resolve 18.1 Build 16
+    e = proj.SetSetting('perfOptimisedMediaOn', '0')
+    f = proj.SetSetting('perfProxyMediaMode', '0')
+
+
 
 
 def modifyMedia(media):
@@ -99,15 +113,16 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         startTimecode = dtStartTime.strftime('%H:%M:%S') + ':00'
 
         timeline = mediaPool.CreateEmptyTimeline(name)
-        result = timeline.SetSetting("useCustomSettings", "1")
-        if not result:
-           print("Unable to set custom settings")
-        result = timeline.SetSetting("timelineFrameRate", "25")
-        if not result:
-           print("Unable to set framerate")
+        #result = timeline.SetSetting("useCustomSettings", "1")
+        #if not result:
+        #   print("Unable to set custom settings")
+        #result = timeline.SetSetting("timelineFrameRate", "25")
+        #if not result:
+        #   print("Unable to set framerate")
 
         timeline.SetStartTimecode(startTimecode)
         
+        #Add the required number of tracks
         timeline.AddTrack("video")
         timeline.AddTrack("video")
         timeline.AddTrack("video")
@@ -115,9 +130,11 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
 
-        timeline.SetTrackName("video", prefs.MCC_TRACK[0], prefs.MCC_TRACK[1])
-        timeline.SetTrackName("video", prefs.EO_OPP_TRACK[0], prefs.EO_OPP_TRACK[1])
+
+        #Set the names of tracks
         timeline.SetTrackName("video", prefs.EO_ACT_TRACK[0], prefs.EO_ACT_TRACK[1])
+        timeline.SetTrackName("video", prefs.EO_OPP_TRACK[0], prefs.EO_OPP_TRACK[1])
+        timeline.SetTrackName("video", prefs.MCC_TRACK[0], prefs.MCC_TRACK[1])
         timeline.SetTrackName("video", prefs.QUAD_TRACK[0], prefs.QUAD_TRACK[1])
         
         timeline.SetTrackName("audio",prefs.PILOT_TRACK[0], prefs.PILOT_TRACK[1])
@@ -125,30 +142,37 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.SetTrackName("audio",prefs.SO_TRACK[0], prefs.SO_TRACK[1])
         timeline.SetTrackName("audio",prefs.FE_TRACK[0], prefs.FE_TRACK[1])
 
+        
+        #Set the visibility of tracks.
+        timeline.SetTrackEnable("video", prefs.EO_ACT_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.EO_OPP_TRACK[0], False)
+        timeline.SetTrackEnable("video", prefs.MCC_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.QUAD_TRACK[0], True)
+
+        timeline.SetTrackEnable("audio", prefs.PILOT_TRACK[0], True)
+        timeline.SetTrackEnable("audio", prefs.COPILOT_TRACK[0], False)
+        timeline.SetTrackEnable("audio", prefs.SO_TRACK[0], False)
+        timeline.SetTrackEnable("audio", prefs.FE_TRACK[0], False)
+        
         return timeline
 
 
 
 def createProject(memo=None):
-    today = datetime.date.today().isoformat()
-    name = prefs.PROJECT_NAME_PREFIX + str(today)
+    today = datetime.datetime.now().strftime('%Y-%m-%d %H.%M.%S')
+    name = prefs.PROJECT_NAME_PREFIX + today
     if memo:
         name += '-%s' % memo
-
+    
     proj = projectManager.CreateProject(name)
     if proj:
-        #modifyProject(proj)
+        modifyProject(proj)
+        
 
-        proj.SetSetting('videoMonitorFormat', 'HD 1080p 25')
-        proj.SetSetting('videoDeckFormat', 'HD 1080p 25')
-        proj.SetSetting('timelineFrameRate', 25.0)
-        proj.SetSetting('timelinePlaybackFrameRate', '25')
-
-        proj.SetSetting('perfOptimisedMediaOn', 0)
-        proj.SetSetting('perfProxyMediaMode', 0)
 
         allMedia = GetAllMedia()
         fixMkvDuration(allMedia)
+        fixTagWrongStartTime(allMedia)
 
         mediaPool = proj.GetMediaPool()
 
@@ -222,7 +246,6 @@ def createProject(memo=None):
         print("Import complete")  #Progress used for debugging
         duration = t1-t0          #Instrumentation
         print("The import took %.1f seconds" % duration) #Instrumentation
-
     return proj
 
 
