@@ -30,6 +30,8 @@ def ReadMkvDuration(filename:str) -> float:
         tag = struct.unpack('BBB', tag)
 
         if tag != (0x44, 0x89, 0x88):
+            print(f"Just checked the file: {filename}")
+            print(f"The position where duration was expected has the following bytes: {tag}")
             raise Exception(prefs.EXCEPTION_MSG_DURATION_ERROR)
             
         duration = fileobject.read(8)
