@@ -108,6 +108,7 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
 
         timeline.SetStartTimecode(startTimecode)
         
+        #Add the required number of tracks
         timeline.AddTrack("video")
         timeline.AddTrack("video")
         timeline.AddTrack("video")
@@ -125,6 +126,18 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.SetTrackName("audio",prefs.SO_TRACK[0], prefs.SO_TRACK[1])
         timeline.SetTrackName("audio",prefs.FE_TRACK[0], prefs.FE_TRACK[1])
 
+        
+        #Set the visibility of tracks.
+        timeline.SetTrackEnable("video", prefs.EO_ACT_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.EO_OPP_TRACK[0], False)
+        timeline.SetTrackEnable("video", prefs.MCC_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.QUAD_TRACK[0], True)
+
+        timeline.SetTrackEnable("audio", prefs.PILOT_TRACK[0], True)
+        timeline.SetTrackEnable("audio", prefs.COPILOT_TRACK[0], False)
+        timeline.SetTrackEnable("audio", prefs.SO_TRACK[0], False)
+        timeline.SetTrackEnable("audio", prefs.FE_TRACK[0], False)
+        
         return timeline
 
 
