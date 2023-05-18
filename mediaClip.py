@@ -1,5 +1,6 @@
 import os
 from readTag import SubClip
+from datetime import datetime
 
 #Class to hold information on a single clip beeing imported
 class MediaClip:
@@ -19,6 +20,10 @@ class MediaClip:
         result = self.stopTime - self.startTime
         return result
 
+    @property
+    def startTimeString(self):
+        result = datetime.fromtimestamp(self.startTime).isoformat(sep=' ')
+        return result
 
     def __init__(self) -> None:
         self.startOfTimeline = False
