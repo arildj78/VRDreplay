@@ -153,7 +153,7 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.SetTrackEnable("audio", prefs.COPILOT_TRACK[0], False)
         timeline.SetTrackEnable("audio", prefs.SO_TRACK[0], False)
         timeline.SetTrackEnable("audio", prefs.FE_TRACK[0], False)
-        
+
         return timeline
 
 
@@ -211,7 +211,6 @@ def createProject(memo=None):
 
                 proj.SetCurrentTimeline(tl.timeline)
                 timelines.append(tl)
-                
             
             medieaPoolItem = mediaStorage.AddItemListToMediaPool(media.mediaFile)
 
