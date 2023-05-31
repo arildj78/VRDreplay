@@ -29,7 +29,7 @@ While writing this script, the following references have been used (not an exhau
 * C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\Developer\Scripting\README.txt
 * [basuke/create-vlog-project.py](https://gist.github.com/basuke/908ed2b0f41d9d995f7955d3cebfb9ae)
 * [Info on how to set timeline framerate](https://forum.blackmagicdesign.com/viewtopic.php?f=21&t=150093)
-* [Discussion on placing clips on specific place in timeline (trackIndex and recordFrame)](https://forum.blackmagicdesign.com/viewtopic.php?f=21&t=113040)
+* [Undocumented Resolve API functions - (trackIndex and recordFrame)](https://forum.blackmagicdesign.com/viewtopic.php?f=21&t=113040)
 
 
 # The media files
