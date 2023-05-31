@@ -5,10 +5,14 @@ import ctypes  # An included library with Python install.
 def Mbox(title, text, style):
     return ctypes.windll.user32.MessageBoxW(0, text, title, style)
 
-
-
-
-
+class MboxStyle:
+    Ok = 0
+    OkCancel = 1
+    AbortRetryIgnore = 2
+    YesNoCancel = 3
+    YesNo = 4
+    RetryCancel = 5
+    CancelTryagainContinue = 6
 
 
 
@@ -291,5 +295,7 @@ verbose = args.verbose
 projectManager.CloseProject(projectManager.GetCurrentProject())
 createProject(memo=args.memo)
 resolve.OpenPage("edit")
+
+Mbox("Import VRD", "The import is complete", MboxStyle.Ok)
 
 sys.exit()
