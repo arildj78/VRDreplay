@@ -161,6 +161,18 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         return timeline
 
 
+def LockAllTracks(timeline):
+        #Set the all tracks to locked
+        a = timeline.SetTrackLock("video", prefs.EO_ACT_TRACK[0], True)
+        b = timeline.SetTrackLock("video", prefs.EO_OPP_TRACK[0], True)
+        c = timeline.SetTrackLock("video", prefs.MCC_TRACK[0], True)
+        d = timeline.SetTrackLock("video", prefs.QUAD_TRACK[0], True)
+
+        e = timeline.SetTrackLock("audio", prefs.PILOT_TRACK[0], True)
+        f = timeline.SetTrackLock("audio", prefs.COPILOT_TRACK[0], True)
+        g = timeline.SetTrackLock("audio", prefs.SO_TRACK[0], True)
+        h = timeline.SetTrackLock("audio", prefs.FE_TRACK[0], True)
+
 
 def createProject(memo=None):
     today = datetime.datetime.now().strftime('%Y-%m-%d %H.%M.%S')
@@ -241,10 +253,12 @@ def createProject(memo=None):
                 mediaPool.AppendToTimeline( [newClip] )
             print()
             print()
-
-
         
-        
+        for tl in timelines:
+            proj.SetCurrentTimeline(tl.timeline)
+            res = LockAllTracks(tl.timeline)
+            
+
         t1 = time.perf_counter()  #Instrumentation
         print("Import complete")  #Progress used for debugging
         duration = t1-t0          #Instrumentation
