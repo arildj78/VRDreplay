@@ -12,6 +12,7 @@ Version tested in parenthesis
 * Clone or copy the script to the folder
 `C:\Users\username\AppData\Roaming\Blackmagic Design\DaVinci Resolve\Support\Fusion\Scripts\Comp\VRDreplay`
 * Change DaVinci Resolve setting `DaVinci Resolve -> Preferences... -> General -> System -> External scripting using` to `Local` or `Network`
+* Create a Windows shortcut to **python.exe "C:\\..\\Import_VRD.py"** with icon set to Helicopter.ico
 
 ### Windows environment variables set to
 * PYTHONPATH = C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\Developer\Scripting\Modules
