@@ -290,7 +290,6 @@ if not resolve:
     print("Please launch DaVinci Resolve first.")
     sys.exit()
 
-resolve.OpenPage("deliver")
 projectManager = resolve.GetProjectManager()
 mediaStorage = resolve.GetMediaStorage()
 fusion = resolve.Fusion()
@@ -309,6 +308,7 @@ verbose = args.verbose
 projectManager.CloseProject(projectManager.GetCurrentProject())
 createProject(memo=args.memo)
 resolve.OpenPage("edit")
+resolve.LoadLayoutPreset('Debrief')
 
 Mbox("Import VRD", "The import is complete", MboxStyle.Ok)
 
