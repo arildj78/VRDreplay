@@ -57,6 +57,9 @@ The video .tag files contain data as shown in the table below, while the .tag fi
 | 39175   | 2952       | Unknown data 6                                   |                      |
 | 39176   | 924        | Unknown data 7                                   |                      |
 
+## EVT
+The event files holds a timestamp for when the event switch has been toggled in the cockpit or by the SO. It also holds additional information that still is not fully reversed. See the document [Reversing the Event file](fileformats/evt.md) for details.
+
 
 # Problems with the .mkv files
 There seems to be multiple problems with the .mkv video files. The following are beeing investigated.
