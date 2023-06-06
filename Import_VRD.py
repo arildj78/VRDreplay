@@ -1,5 +1,7 @@
 import prefs
 from getAllMedia import GetAllMedia
+from event import GetUniqueEvents
+from prefs import MarkerColor
 
 import ctypes  # An included library with Python install.
 def Mbox(title, text, style):
@@ -187,6 +189,7 @@ def createProject(memo=None):
 
 
         allMedia = GetAllMedia()
+        uniqueEvents = GetUniqueEvents()
         fixMkvDuration(allMedia)
         fixTagWrongStartTime(allMedia)
 
@@ -220,13 +223,19 @@ def createProject(memo=None):
                 name = dtStartTime.strftime("%Y-%m-%d %H:%M:%S")
 
                 
+                print(f'Media.startTime{media.startTime}')
+                print(f'tl.startTime{media.subClips[0].StartSec}')
+
                 tl = Timeline(createNewTimeline(mediaPool, name, media.startTime))
-                tl.startTime = media.subClips[0].StartSec
-                tl.endTime = media.subClips[-1].EndSec
+                #tl.startTime = media.subClips[0].StartSec  # Replaced for debugging. startTime was set to the time of the second subclip
+                tl.startTime = media.startTime
+                #tl.endTime = media.subClips[-1].EndSec
                 tl.name = name
 
                 proj.SetCurrentTimeline(tl.timeline)
                 timelines.append(tl)
+            
+            timelines[timeLineCounter-1].endTime = media.stopTime #Update end of current timeline with the latest mediafile
             
             medieaPoolItem = mediaStorage.AddItemListToMediaPool(media.mediaFile)
 
@@ -255,7 +264,16 @@ def createProject(memo=None):
             print()
         
         for tl in timelines:
+            print(tl)
             proj.SetCurrentTimeline(tl.timeline)
+            for event in uniqueEvents:
+                print(f'Event: {event.time}')
+                if tl.coversTimestamp(event.time):
+                    frameID = tl.TimestampToFrameID(event.time)
+                    print(f'Event: {event}')
+                    print(f'frameID: {frameID}')
+                    print('-----------')
+                    tl.timeline.AddMarker(frameID, MarkerColor.YELLOW, "Event", "", 1)
             res = LockAllTracks(tl.timeline)
             
 

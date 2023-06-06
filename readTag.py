@@ -100,10 +100,10 @@ def ReadTag(tagFile:str, trackType:prefs.TrackType) -> list[SubClip]:
 
                 #Convert Time of frame from string to an integer. Rounding is due to floating point accuracy issues
                 frame.frameTime = float( str_frameTime )
-                frame.frameNumber = int(round( frame.frameTime * 25, 0 ))
+                frame.frameNumber = int(round( frame.frameTime * prefs.TIMELINE_FPS, 0 ))
 
                 #Convert frame number to minutes:seconds:frames
-                ss, ff = divmod(frame.frameNumber, 25)   #TODO REMOVE THIS COMMENT +1 one because next frame is the one that needs to be removed.
+                ss, ff = divmod(frame.frameNumber, prefs.TIMELINE_FPS)   #TODO REMOVE THIS COMMENT +1 one because next frame is the one that needs to be removed.
                 mm, ss = divmod(ss, 60)
 
                 frame.frameMM = mm

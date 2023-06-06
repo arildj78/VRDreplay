@@ -24,6 +24,24 @@ class TrackType():
 	VIDEO = "video"
 	AUDIO = "audio"
 
+class MarkerColor():
+	BLUE     = "Blue"
+	CYAN     = "Cyan"
+	GREEN    = "Green"
+	YELLOW   = "Yellow"
+	RED      = "Red"
+	PINK     = "Pink"
+	PURPLE   = "Purple"
+	FUCHSIA  = "Fuchsia"
+	ROSE     = "Rose"
+	LAVENDER = "Lavender"
+	SKY      = "Sky"
+	MINT     = "Mint"
+	LEMON    = "Lemon"
+	SAND     = "Sand"
+	COCOA    = "Cocoa"
+	CREAM    = "Cream"
+
 
 RECORDING_DIRECTORIES = [
     #'F:\\AW101\\Disk1\\vrd_database' ,
@@ -63,6 +81,21 @@ SO_TAG_FILENAME_REGEX     = 'SO_CAP_[0-9]{4}_[0-9]{3}.[T,t][A,a][G,g]$'
 FE_MKV_FILENAME_REGEX     = 'FE_CAP_[0-9]{4}_[0-9]{3}.[M,m][K,k][V,v]$'
 FE_TAG_FILENAME_REGEX     = 'FE_CAP_[0-9]{4}_[0-9]{3}.[T,t][A,a][G,g]$'
 
+#*********************
+#   Event file names
+#*********************
+# Match the following filenames:
+# EO_ACT_0000.evt
+# EO_OPP_0000.evt
+# MCC_0000.evt
+# OPLS_XCS_QUAD_0000.evt
+# Pilot_CAP_0000.evt
+# CoPilot_CAP_0000.evt
+# SO_CAP_0000.evt
+# FE_CAP_0000.evt
+ 
+#EVT_FILENAME_REGEX     = '(EO_ACT|EO_OPP|MCC|OPLS_XCS_QUAD|Pilot_CAP|CoPilot_CAP|SO_CAP|FE_CAP)_[0-9]{4}.[E,e][V,v][T,t]$'
+EVT_FILENAME_REGEX     = '(EO_ACT|EO_OPP|MCC|OPLS_XCS_QUAD|Pilot_CAP|CoPilot_CAP|SO_CAP|FE_CAP)_[0-9]{4}.[E,e][V,v][T,t]$'
 
 #*********************
 #   USB identifiers
