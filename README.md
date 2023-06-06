@@ -65,6 +65,7 @@ The event files holds a timestamp for when the event switch has been toggled in 
 There seems to be multiple problems with the .mkv video files. The following are beeing investigated.
 * Duration is one frame to short
 * Missing frames
+* Codec issue during playback
 
 ## Duration
 *Segment information -> Duration (tag 0x4489)* is one frame to short. Typically each video file is 7500 frames but duration is set to 7499. The duration is given in ticks as a double and seems to be 1ms per tick. The exact value for ticks can be found in *Segment information -> Timestamp scale (tag 0x2AD7B1)* and is given in nanoseconds per tick. This script will assume 1ms pr tick and increase the duration of every file with 40ms to reveal the lost frame at the end of the clip.
@@ -77,3 +78,12 @@ There seems to be multiple problems with the .mkv video files. The following are
 ## Missing frames
 The files seems to be of variable framerate close to 25 fps resulting in approximately 40ms pr frame. However, multiple frames in each clip are less than 0.05ms resulting in missing frames in DaVinci Resolve. This script handles this problem by assuming 25fps and cutting each file in multiple subclips based on the timings given in the .tag file effectively removing the missing frames.
 
+## Codec issue during playback
+The following has been observed when playing back the video files
+
+| Software               | Version            | Observation                                                                                                              |
+|------------------------|--------------------|--------------------------------------------------------------------------------------------------------------------------|
+| Windows 11 photo app   | 2023.11050.16005.0 | Plays video with no noticeable problems.                                                                                 |
+| VLC                    | 3.0.18             | Garbled image on lower half of the video.                                                                                |
+| DaVinci Resolve (Free) | 18.1.4             | The missing frame is rendered as a red banner with the text **Media Offline**, the following frames are rendered correct |
+| DaVinci Resolve Studio | 18.1.4             | The missing frame is rendered as a solid grey frame, the following 5 frames are rendered grey with small artifacts       |
