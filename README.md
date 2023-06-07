@@ -7,6 +7,7 @@ Version tested in parenthesis
 * Python (3.10.10)
 * [PyUSB](https://github.com/pyusb/pyusb)
 * [libusb-package](https://github.com/pyocd/libusb-package)
+* Create a Project setting named **Debrief** in Resolve
 * Create a UI Layout named **Debrief** in Resolve
 
 ## Installation
