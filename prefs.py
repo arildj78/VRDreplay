@@ -29,7 +29,7 @@ class MarkerColor():
 	BLUE     = "Blue"
 	CYAN     = "Cyan"
 	GREEN    = "Green"
-	YELLOW   = "Yellow"
+	YELLOW   = "Yellow"   # 240, 157, 0   #0.94117647059, 0.61568627451, 0.00000000000
 	RED      = "Red"
 	PINK     = "Pink"
 	PURPLE   = "Purple"

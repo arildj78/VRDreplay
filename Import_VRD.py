@@ -248,10 +248,10 @@ def createProject(memo=None):
             for subClip in media.subClips:
                 newClip = {
                     "mediaPoolItem" : medieaPoolItem[0],                                 #The media file to be inserted
-                    "trackIndex" : media.trackNumber,                                    #Track to insert the media in
-                    "startFrame" : subClip.startFrame,                                   #The first frame in the media to be used
-                    "endFrame" : subClip.endFrame,                                       #The last frame in the media to be used
-                    "recordFrame" : subClip.clipFirstFrame + subClip.recordFrameFirst,   #The timeline location (in frames) to insert the clip at
+                    "trackIndex" : media.trackNumber,                                    #Track to insert the media in              e.g. 4
+                    "startFrame" : subClip.startFrame,                                   #The first frame in the media to be used   e.g. 6002
+                    "endFrame" : subClip.endFrame,                                       #The last frame in the media to be used    e.g. 7501
+                    "recordFrame" : subClip.clipFirstFrame + subClip.recordFrameFirst,   #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
                     "recordFrameEnd" :  subClip.clipFirstFrame + subClip.recordFrameLast #For debugging. The last frame on the timeline occupied by the clip
                 }
                 print(media.tagFile + '\t' +
