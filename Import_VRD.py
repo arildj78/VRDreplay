@@ -2,6 +2,7 @@ import prefs
 from getAllMedia import GetAllMedia
 from event import GetUniqueEvents, CreateEventMarkerClip, InsertEventMarkerClip
 from prefs import MarkerColor
+import daVinciConnection
 
 import ctypes  # An included library with Python install.
 def Mbox(title, text, style):
@@ -63,51 +64,6 @@ def modifyProject(proj):
 
 
 
-
-def modifyMedia(media):
-    """
-    This function is called with each media added to media pool.
-    media: MediaPoolItem
-    """
-    # props = media.GetClipProperty()
-    # print(props)
-    pass
-
-def modifyClip(clip):
-    """
-    This function is called with each media added to timeline.
-    It is a good chance to set clip color, set LUT.
-    media: TimelineItem
-    """
-    pass
-    #clip.SetLUT(1, os.path.join(RESOLVE_LUT_DIR, r"Sony SLog2 to Rec709.ilut"))
-
-#define paths for Resolve components
-
-RESOLVE_SUPPORT_DIR = os.path.join(*[
-    os.environ["PROGRAMDATA"],
-    "Blackmagic Design",
-    "DaVinci Resolve",
-    "Support",
-])
-
-RESOLVE_LUT_DIR = os.path.join(*[
-    RESOLVE_SUPPORT_DIR,
-    "LUT",
-])
-
-RESOLVE_SCRIPT_API = os.path.join(*[
-    RESOLVE_SUPPORT_DIR,
-    "Developer",
-    "Scripting",
-])
-
-RESOLVE_SCRIPT_LIB = os.path.join(*[
-    os.environ["ProgramFiles"],
-    "Blackmagic Design",
-    "DaVinci Resolve",
-    "fusionscript.dll",
-])
 
 # actions
 
@@ -290,32 +246,7 @@ def createProject(memo=None):
 
 
 
-
-
-
-# define environment variables
-
-os.environ["RESOLVE_SCRIPT_API"] = RESOLVE_SCRIPT_API
-os.environ["RESOLVE_SCRIPT_LIB"] = RESOLVE_SCRIPT_LIB
-
-# setup python path
-
-sys.path.append(os.path.join(RESOLVE_SCRIPT_API, 'Modules'))
-
-# now it's ready to import module
-import DaVinciResolveScript as dvrs
-
-# major objects
-resolve = dvrs.scriptapp("Resolve")
-if not resolve:
-    print("Please launch DaVinci Resolve first.")
-    sys.exit()
-
-projectManager = resolve.GetProjectManager()
-mediaStorage = resolve.GetMediaStorage()
-fusion = resolve.Fusion()
-
-# command line options
+resolve, projectManager, currentProject, mediaStorage, fusion = daVinciConnection.initConnection()
 
 
 
