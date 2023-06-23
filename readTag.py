@@ -26,6 +26,7 @@ class Frame:
         return result
  
 class SubClip:
+    framerate: float
     startFrame : int
     endFrame : int
     recordFrameFirst : int
@@ -54,7 +55,7 @@ class SubClip:
         return self.recordFrameFirst + self.frameCount - 1
     
     def __init__(self, clipFirstFrame, startFrame, endFrame, recordFrameFirst, startUnixTime, startNanoSec) -> None:
-        self.framerate = 25
+        self.framerate = prefs.TIMELINE_FPS
         self.clipFirstFrame = clipFirstFrame
         self.startFrame = startFrame
         self.endFrame = endFrame
