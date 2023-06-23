@@ -314,17 +314,11 @@ fusion = resolve.Fusion()
 
 # command line options
 
-parser = ArgumentParser(description="Create DaVinci Resolve project and import media files")
-parser.add_argument("-d", "--date", dest="dates", action="append", help="Default is today. Multiple date is okay.")
-parser.add_argument("--verbose", action="store_const", const=True, default=False)
-parser.add_argument("memo", nargs='?', default="")
 
-args = parser.parse_args()
 
-verbose = args.verbose
 
 projectManager.CloseProject(projectManager.GetCurrentProject())
-createProject(memo=args.memo)
+createProject()
 resolve.OpenPage("edit")
 resolve.LoadLayoutPreset('Debrief')
 
