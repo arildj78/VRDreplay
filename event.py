@@ -1,6 +1,7 @@
 import struct, os
 from datetime import datetime
 import re #regEx library
+import daVinciConnection
 
 import prefs
 
@@ -132,7 +133,9 @@ def GetUniqueEvents(directories=prefs.RECORDING_DIRECTORIES) -> list[Event]:
 
 
 if __name__ == "__main__":
-    allEvents = GetUniqueEvents()
-    allEvents.sort()
-    for event in allEvents:
-        print(event)
+    resolve, projectManager, currentProject, mediaStorage, fusion = daVinciConnection.initConnection()
+    CreateEventMarkerClip(currentProject)
+ 
+
+
+
