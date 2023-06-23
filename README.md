@@ -32,6 +32,7 @@ While writing this script, the following references have been used (not an exhau
 * [basuke/create-vlog-project.py](https://gist.github.com/basuke/908ed2b0f41d9d995f7955d3cebfb9ae)
 * [Info on how to set timeline framerate](https://forum.blackmagicdesign.com/viewtopic.php?f=21&t=150093)
 * [Undocumented Resolve API functions - (trackIndex and recordFrame)](https://forum.blackmagicdesign.com/viewtopic.php?f=21&t=113040)
+* [Looking up Timeline item properties](https://gist.github.com/X-Raym/2f2bf453fc481b9cca624d7ca0e19de8)
 
 
 # The media files
