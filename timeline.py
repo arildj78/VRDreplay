@@ -1,12 +1,15 @@
+from typing import Any
 import prefs
 
 class Timeline:
     name : str
     startTime : float
     endTime : float
+    mediaPool : Any
     
-    def __init__(self, timeline) -> None:
+    def __init__(self, timeline, mediaPool) -> None:
         self.timeline = timeline
+        self.mediaPool = mediaPool
 
     def __str__(self) -> str:
         return f'{self.name}\t{self.startTime}\t{self.endTime}'

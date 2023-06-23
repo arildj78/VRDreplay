@@ -226,7 +226,7 @@ def createProject(memo=None):
                 print(f'Media.startTime{media.startTime}')
                 print(f'tl.startTime{media.subClips[0].StartSec}')
 
-                tl = Timeline(createNewTimeline(mediaPool, name, media.startTime))
+                tl = Timeline(createNewTimeline(mediaPool, name, media.startTime), mediaPool)
                 #tl.startTime = media.subClips[0].StartSec  # Replaced for debugging. startTime was set to the time of the second subclip
                 tl.startTime = media.startTime
                 #tl.endTime = media.subClips[-1].EndSec
