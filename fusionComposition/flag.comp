@@ -1,0 +1,399 @@
+Composition {
+	CurrentTime = 0,
+	RenderRange = { 0, 124 },
+	GlobalRange = { 0, 124 },
+	CurrentID = 20,
+	HiQ = true,
+	PlaybackUpdateMode = 0,
+	Version = "DaVinci Resolve Studio 18.1.4.0009",
+	SavedOutputs = 0,
+	HeldTools = 0,
+	DisabledTools = 0,
+	LockedTools = 0,
+	AudioOffset = 0,
+	Resumable = true,
+	OutputClips = {
+	},
+	Tools = {
+		Merge99 = Merge {
+			CtrlWZoom = false,
+			Inputs = {
+				Background = Input {
+					SourceOp = "MarkerFillColor",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "MarkerOutlineColor",
+					Source = "Output",
+				},
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 537.333, -5.36365 } },
+		},
+		MarkerFillColor = Background {
+			NameSet = true,
+			Inputs = {
+				EffectMask = Input {
+					SourceOp = "FillPath",
+					Source = "Mask",
+				},
+				GlobalOut = Input { Value = 124, },
+				Width = InstanceInput {
+					SourceOp = "Merge99",
+					Source = "Width",
+				},
+				Height = InstanceInput {
+					SourceOp = "Merge99",
+					Source = "Height",
+				},
+				UseFrameFormatSettings = InstanceInput {
+					SourceOp = "Merge99",
+					Source = "UseFrameFormatSettings",
+				},
+				TopLeftRed = Input { Value = 0.941176470588235, },
+				TopLeftGreen = Input { Value = 0.615686274509804, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 427.333, 27.6364 } },
+		},
+		MarkerOutlineColor = Background {
+			NameSet = true,
+			Inputs = {
+				EffectMask = Input {
+					SourceOp = "OutlinePath",
+					Source = "Mask",
+				},
+				GlobalOut = Input { Value = 124, },
+				Width = InstanceInput {
+					SourceOp = "Merge99",
+					Source = "Width",
+				},
+				Height = InstanceInput {
+					SourceOp = "Merge99",
+					Source = "Height",
+				},
+				UseFrameFormatSettings = InstanceInput {
+					SourceOp = "Merge99",
+					Source = "UseFrameFormatSettings",
+				},
+				Depth = InstanceInput {
+					SourceOp = "MarkerFillColor",
+					Source = "Depth",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 427.333, -5.36365 } },
+		},
+		MediaOut1 = Saver {
+			CtrlWZoom = false,
+			Inputs = {
+				Index = Input { Value = "0", },
+				Input = Input {
+					SourceOp = "Merge99",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 536, -71.3636 } },
+		},
+		FillPath = PolylineMask {
+			DrawMode = "ModifyOnly",
+			DrawMode2 = "InsertAndModify",
+			NameSet = true,
+			Inputs = {
+				JoinStyle = Input { Value = 2, },
+				CapStyle = Input { Value = 0, },
+				MaskWidth = Input { Value = 320, },
+				MaskHeight = Input { Value = 240, },
+				PixelAspect = Input { Value = { 1, 1 }, },
+				Polyline = Input {
+					Value = Polyline {
+						Closed = true,
+						Points = {
+							{ Linear = true, X = -0.39296875, Y = 0.415277777777778, LX = -0.00460069444444444, LY = 0.00551234567901238, RX = 0.00470138888888888, RY = 0.00551234567901238 },
+							{ Linear = true, X = -0.378864583333333, Y = 0.431814814814815, LX = -0.00470138888888888, LY = -0.00551234567901232, RX = -1.38888888888689e-05, RY = 0.0227283950617284 },
+							{ Linear = true, X = -0.37890625, Y = 0.5, LX = 1.38888888888689e-05, LY = -0.0227283950617284, RX = -0.00927430555555553, RY = 0 },
+							{ Linear = true, X = -0.406729166666667, Y = 0.5, LX = 0.00927430555555553, LY = 0, RX = -1.38888888889244e-05, RY = -0.0227283950617284 },
+							{ Linear = true, X = -0.406770833333333, Y = 0.431814814814815, LX = 1.38888888888689e-05, LY = 0.0227283950617284, RX = 0.00460069444444444, RY = -0.00551234567901232 }
+						}
+					},
+				},
+				Polyline2 = Input {
+					Value = Polyline {
+					},
+					Disabled = true,
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 317.333, 27.6364 } },
+		},
+		OutlinePath = PolylineMask {
+			DrawMode = "ModifyOnly",
+			DrawMode2 = "InsertAndModify",
+			NameSet = true,
+			Inputs = {
+				BorderWidth = Input { Value = 0.00104166666666667, },
+				Solid = Input { Value = 0, },
+				JoinStyle = Input { Value = 2, },
+				CapStyle = Input { Value = 0, },
+				MaskWidth = Input { Value = 320, },
+				MaskHeight = Input { Value = 240, },
+				PixelAspect = Input { Value = { 1, 1 }, },
+				Polyline = Input {
+					Value = Polyline {
+						Closed = true,
+						Points = {
+							{ Linear = true, X = -0.39296875, Y = 0.415277777777778, LX = -0.00460069444444444, LY = 0.00551234567901238, RX = 0.00470138888888888, RY = 0.00551234567901238 },
+							{ Linear = true, X = -0.378864583333333, Y = 0.431814814814815, LX = -0.00470138888888888, LY = -0.00551234567901232, RX = -1.38888888888689e-05, RY = 0.0227283950617284 },
+							{ Linear = true, X = -0.37890625, Y = 0.5, LX = 1.38888888888689e-05, LY = -0.0227283950617284, RX = -0.00927430555555553, RY = 0 },
+							{ Linear = true, X = -0.406729166666667, Y = 0.5, LX = 0.00927430555555553, LY = 0, RX = -1.38888888889244e-05, RY = -0.0227283950617284 },
+							{ Linear = true, X = -0.406770833333333, Y = 0.431814814814815, LX = 1.38888888888689e-05, LY = 0.0227283950617284, RX = 0.00460069444444444, RY = -0.00551234567901232 }
+						}
+					},
+				},
+				Polyline2 = Input {
+					Value = Polyline {
+					},
+					Disabled = true,
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 317.333, -5.36365 } },
+		}
+	},
+	Frames = {
+		{
+			FrameTypeID = "ChildFrame",
+			Mode = 3,
+			LayoutPreset = 0,
+			PresetName = "Default",
+			Left = 0,
+			Top = 0,
+			Width = 1920,
+			Height = 898,
+			ZoneInfo = { AuxRight = { Expanded = true }, ["!Left"] = {
+				}, AuxLeft = { Expanded = true }, Right = { Expanded = true, }, Left = { Expanded = false, }, ["!Right"] = {
+				} },
+			ViewInfo = { Viewer1 = { Show = true, RatioX = 1, RatioY = 0.01, }, InnerLeft = {
+				}, MainSplit = { RatioX = 100, RatioY = 1.00118343195266, }, CenterSplit = { RatioX = 1, RatioY = 100, }, Viewer2 = { Show = true, RatioX = 1, RatioY = 0.01, }, Comments = { Show = false }, Time = { Show = true, RatioX = 100, }, InnerColumns = { RatioX = 100, RatioY = 1.99881656804734, }, Keyframes = { Show = false, }, LayoutStrip = { Show = true, }, Inspector = { Show = true, RatioX = 100, RatioY = 1, }, InnerRight = {
+				}, MediaPool = { Show = false, }, OuterColumns = { RatioX = 100, RatioY = 1, }, Effects = { Show = false, }, ActionStrip = { Show = true, RatioX = 100, }, Metadata = { Show = false, }, OuterLeft = {
+				}, ViewerSplit = { RatioX = 100, RatioY = 1, }, Nodes = { Show = true, RatioX = 1, RatioY = 100, }, OuterRight = { PixelX = 420, RatioY = 100, }, Clips = { Show = false, }, Spline = { Show = false, } },
+			Views = ordered() {
+				MediaPool = "MediaPoolView",
+				Effects = MultiView {
+					Active = "EffectView",
+					ViewList = ordered() {
+						EffectView = "EffectView"
+					},
+				},
+				Nodes = MultiView {
+					Active = "FlowView",
+					ViewList = ordered() {
+						FlowView = "FlowView"
+					},
+					FlowView = FlowView {
+						Flags = {
+							Navigator = true,
+							AutoSnap = true,
+							RemoveRouters = true
+						},
+						NavigatorSize = { 200, 140 },
+						Direction = "Horizontal",
+						PipeStyle = "Direct",
+						RootScale = 0.707107,
+						RootOffset = { 206.42, 111.669 }
+					}
+				},
+				Keyframes = MultiView {
+					Active = "TimelineView",
+					ViewList = ordered() {
+						TimelineView = "TimelineView"
+					},
+					TimelineView = TimelineView {
+						TreeControlState = {
+						},
+						DisplayMode = "All Tools",
+						ShowCurrentTimeTools = false,
+						Filter = "Show All",
+						ShowSelectedTools = false,
+						ShowAnimatedToolsOnly = false,
+						ShowEditBoxes = false,
+						KeyFrameView = {
+							Position = { Left = 232, Bottom = 324 },
+							ScaleX = 2.12765957446809,
+							OffsetX = -48.9361702127661,
+							OffsetY = 0,
+							AutoScaling = "scroll",
+							AutoSnapTo = "frame",
+							AutoSnapToGuidelines = false,
+							GuidelinesGrabEnabled = true,
+							GuidelinesSnapTo = "none"
+						},
+						Spreadsheet = { LeftPos = 232, Visible = false }
+					}
+				},
+				Spline = MultiView {
+					Active = "SplineView",
+					ViewList = ordered() {
+						SplineView = "SplineEditorView"
+					},
+					SplineView = SplineEditorView {
+						LeftPos = 264,
+						ScaleX = 0.2,
+						ScaleY = 0.00334448160535117,
+						OffsetX = -3.4,
+						OffsetY = 0,
+						AutoScaling = "scroll",
+						AutoSnapTo = "frame",
+						AutoSnapToGuidelines = false,
+						GuidelinesSnapTo = "frame",
+						ShowKeyMarkers = false,
+						IndependentHandles = false,
+						ShowNonSplineModifiers = false,
+						GuidelinesGrabEnabled = true,
+						ShowOneToolOnly = false,
+						ShowSelectedTools = false,
+						ShowAllInputs = false,
+						Filter = "Show All"
+					}
+				},
+				Inspector = MultiView {
+					Active = "Tools",
+					ViewList = ordered() {
+						Tools = "ControlView",
+						Modifiers = "ModifierView"
+					},
+				},
+				Viewer1 = MultiView {
+					Active = "LeftView",
+					ViewList = ordered() {
+						LeftView = "PreviewContainer"
+					},
+				},
+				Viewer2 = MultiView {
+					Active = "RightView",
+					ViewList = ordered() {
+						RightView = "PreviewContainer"
+					},
+				},
+				Time = "TimeView",
+				ActionStrip = "ActionStripView",
+				LayoutStrip = "LayoutStripView",
+				Clips = "ClipsView",
+				Metadata = "MetadataView"
+			},
+			Layout = {
+				{ ID = "LayoutStrip", FixedY = 36, Resolve = false, Flat = true },
+				{
+					{
+						{ ID = "MediaPool", Fusion = false, RatioX = 1 },
+						{ ID = "Effects", RatioX = 1 },
+						Zone = "Left",
+						Rows = 2,
+						PaneID = "OuterLeft",
+						PixelX = 420
+					},
+					{
+						{
+							{
+								{ ID = "MediaPool", Fusion = false, RatioX = 1 },
+								{ ID = "Effects", RatioX = 1 },
+								PaneID = "InnerLeft",
+								MaxViews = 1,
+								PixelX = 420,
+								Rows = 2,
+								Zone = "!Left"
+							},
+							{
+								{
+									{ ID = "Viewer1", RatioY = 0.01, RatioX = 1 },
+									{ ID = "Viewer2", RatioX = 1 },
+									RatioY = 1,
+									Columns = 2,
+									PaneID = "ViewerSplit"
+								},
+								{ ID = "Time", FixedY = 83, Flat = true },
+								RatioX = 1,
+								Rows = 2
+							},
+							{
+								{ ID = "Inspector", RatioY = 1 },
+								{ ID = "Metadata", RatioY = 1, Fusion = false },
+								PaneID = "InnerRight",
+								MaxViews = 1,
+								PixelX = 420,
+								Rows = 2,
+								Zone = "!Right"
+							},
+							RatioY = 2,
+							Columns = 3,
+							PaneID = "InnerColumns"
+						},
+						{ ID = "ActionStrip", FixedY = 50, Flat = true },
+						{
+							{ ID = "Nodes", RatioX = 1 },
+							{ ID = "Spline", RatioX = 1 },
+							{ ID = "Keyframes", RatioX = 1 },
+							RatioY = 1,
+							Columns = 3,
+							PaneID = "MainSplit"
+						},
+						{ Fusion = false, ID = "Clips", LARGE_FixedY = 160, MEDIUM_FixedY = 138, SMALL_FixedY = 110 },
+						RatioX = 1,
+						Rows = 4,
+						PaneID = "CenterSplit"
+					},
+					{
+						{ ID = "Inspector", RatioY = 1 },
+						{ ID = "Metadata", RatioY = 1, Fusion = false },
+						Zone = "Right",
+						Rows = 2,
+						PaneID = "OuterRight",
+						PixelX = 420
+					},
+					RatioY = 1,
+					Columns = 3,
+					PaneID = "OuterColumns"
+				},
+				RatioX = 1,
+				Rows = 2,
+				RatioY = 1
+			},
+			TopBar = {
+				Left = { "Left", "MediaPool", "Effects", "Clips", "Nodes", "Console" },
+				Right = { "Spline", "Keyframes", "Metadata", "Inspector", "Right" }
+			}
+		}
+	},
+	Prefs = {
+		Comp = {
+			Paths = {
+				Map = {
+					["ResolveCaches:"] = "C:\\Users\\arild\\Videos\\CacheClip\\FusionCache"
+				},
+			},
+			LastFile = "C:\\Users\\arild\\AppData\\Roaming\\Blackmagic Design\\DaVinci Resolve\\Support\\Fusion\\Scripts\\Comp\\VRDreplay\\",
+			Interactive = {
+				Proxy = {
+					Scale = 1,
+				},
+			},
+			FrameFormat = {
+				GuideRatio = 1.77777777777778,
+				DepthPreview = 3,
+				Rate = 25,
+				DepthFull = 3,
+				DepthInteractive = 3,
+			},
+			Unsorted = {
+				GlobalEnd = 124
+			},
+			Views = {
+				RightView = {
+					Viewer = {
+					},
+				},
+				LeftView = {
+				},
+				View1 = {
+				},
+			},
+		}
+	},
+}

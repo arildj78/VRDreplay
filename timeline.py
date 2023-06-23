@@ -28,4 +28,9 @@ class Timeline:
 
         return frameID
             
+    def TimestampToRecordFrame(self, timestamp:float) -> float:
+        startFrame = self.timeline.GetStartFrame()
+        recordFrame = startFrame + self.TimestampToFrameID(timestamp)
 
+        return recordFrame
+            

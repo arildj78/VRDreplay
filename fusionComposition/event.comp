@@ -1,0 +1,201 @@
+{
+	Tools = ordered() {
+		Text1 = TextPlus {
+			Inputs = {
+				GlobalOut = Input { Value = 124, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				["Gamut.SLogVersion"] = Input { Value = FuID { "SLog2" }, },
+				Center = Input {
+					SourceOp = "Publish1",
+					Source = "Value",
+				},
+				LayoutRotation = Input { Value = 1, },
+				TransformRotation = Input { Value = 1, },
+				TransformShear = Input { Value = 1, },
+				TransformSize = Input { Value = 1, },
+				Red1 = Input { Value = 0, },
+				Green1 = Input { Value = 0, },
+				Blue1 = Input { Value = 0, },
+				Softness1 = Input { Value = 1, },
+				StyledText = Input { Value = "EVENT", },
+				Font = Input { Value = "Open Sans", },
+				Style = Input { Value = "Bold", },
+				Size = Input { Value = 0.0696, },
+				VerticalJustificationNew = Input { Value = 3, },
+				HorizontalJustificationNew = Input { Value = 3, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 165, -16.5 } },
+		},
+		Publish1 = PublishPoint {
+			Inputs = {
+				Value = Input { Value = { 0.32264218159698, 0.921932424894414 }, },
+			},
+		},
+		Outline = RectangleMask {
+			NameSet = true,
+			Inputs = {
+				Filter = Input { Value = FuID { "Fast Gaussian" }, },
+				BorderWidth = Input { Value = 0.006, },
+				Solid = Input { Value = 0, },
+				MaskWidth = Input { Value = 1920, },
+				MaskHeight = Input { Value = 1080, },
+				PixelAspect = Input { Value = { 1, 1 }, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				ClippingMode = Input { Value = FuID { "None" }, },
+				Center = Input {
+					SourceOp = "Publish1",
+					Source = "Value",
+				},
+				Width = Input {
+					SourceOp = "Publish2",
+					Source = "Value",
+				},
+				Height = Input {
+					SourceOp = "Publish3",
+					Source = "Value",
+				},
+				CornerRadius = Input {
+					SourceOp = "Publish4",
+					Source = "Value",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 55, 16.5 } },
+		},
+		Publish2 = PublishNumber {
+			Inputs = {
+				Value = Input { Value = 0.15, },
+			},
+		},
+		Publish3 = PublishNumber {
+			Inputs = {
+				Value = Input { Value = 0.088, },
+			},
+		},
+		Publish4 = PublishNumber {
+			CtrlWZoom = false,
+			Inputs = {
+				Value = Input { Value = 0.283, },
+			},
+		},
+		OutlineColor = Background {
+			NameSet = true,
+			Inputs = {
+				EffectMask = Input {
+					SourceOp = "Outline",
+					Source = "Mask",
+				},
+				GlobalOut = Input { Value = 124, },
+				Width = InstanceInput {
+					SourceOp = "Merge99",
+					Source = "Width",
+				},
+				Height = InstanceInput {
+					SourceOp = "Merge99",
+					Source = "Height",
+				},
+				UseFrameFormatSettings = InstanceInput {
+					SourceOp = "Merge99",
+					Source = "UseFrameFormatSettings",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 165, 16.5 } },
+		},
+		MediaOut1 = MediaOut {
+			Inputs = {
+				Index = Input { Value = "0", },
+				Input = Input {
+					SourceOp = "Merge99",
+					Source = "Output",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 275, -49.5 } },
+		},
+		Merge99 = Merge {
+			CtrlWZoom = false,
+			NameSet = true,
+			Inputs = {
+				Background = Input {
+					SourceOp = "Merge2",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "Text1",
+					Source = "Output",
+				},
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 275, -16.5 } },
+		},
+		Merge2 = Merge {
+			Inputs = {
+				Background = Input {
+					SourceOp = "Merge1",
+					Source = "Output",
+				},
+				Foreground = Input {
+					SourceOp = "OutlineColor",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 275, 16.5 } },
+		},
+		Merge1 = Merge {
+			NameSet = true,
+			Inputs = {
+				Background = Input {
+					SourceOp = "FillColor",
+					Source = "Output",
+				},
+				PerformDepthMerge = Input { Value = 0, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 275, 49.5 } },
+		},
+		BoxFill = RectangleMask {
+			NameSet = true,
+			Inputs = {
+				Filter = Input { Value = FuID { "Fast Gaussian" }, },
+				MaskWidth = Input { Value = 1920, },
+				MaskHeight = Input { Value = 1080, },
+				PixelAspect = Input { Value = { 1, 1 }, },
+				UseFrameFormatSettings = Input { Value = 1, },
+				ClippingMode = Input { Value = FuID { "None" }, },
+				Center = Input {
+					SourceOp = "Publish1",
+					Source = "Value",
+				},
+				Width = Input {
+					SourceOp = "Publish2",
+					Source = "Value",
+				},
+				Height = Input {
+					SourceOp = "Publish3",
+					Source = "Value",
+				},
+				CornerRadius = Input {
+					SourceOp = "Publish4",
+					Source = "Value",
+				},
+			},
+			ViewInfo = OperatorInfo { Pos = { 55, 49.5 } },
+		},
+		FillColor = Background {
+			NameSet = true,
+			Inputs = {
+				EffectMask = Input {
+					SourceOp = "BoxFill",
+					Source = "Mask",
+				},
+				GlobalOut = Input { Value = 124, },
+				Width = Input { Value = 1920, },
+				Height = Input { Value = 1080, },
+				TopLeftRed = Input { Value = 0.937254901960784, },
+				TopLeftGreen = Input { Value = 0.615686274509804, },
+			},
+			ViewInfo = OperatorInfo { Pos = { 165, 49.5 } },
+		}
+	}
+}

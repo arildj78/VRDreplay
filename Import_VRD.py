@@ -1,6 +1,6 @@
 import prefs
 from getAllMedia import GetAllMedia
-from event import GetUniqueEvents
+from event import GetUniqueEvents, CreateEventMarkerClip, InsertEventMarkerClip
 from prefs import MarkerColor
 
 import ctypes  # An included library with Python install.
@@ -36,8 +36,6 @@ from timeline import Timeline
 # *******************************
 
 presetName = "Default" # You have to define this preset by your self. <----
-
-markerColor = "Yellow"
 
 timelines : list[Timeline]
 timelines = []
@@ -132,12 +130,14 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.AddTrack("video")
         timeline.AddTrack("video")
         timeline.AddTrack("video")
+        timeline.AddTrack("video")
         timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
 
 
         #Set the names of tracks
+        timeline.SetTrackName("video", prefs.EVENT_MARKER_TRACK[0], prefs.EVENT_MARKER_TRACK[1])
         timeline.SetTrackName("video", prefs.EO_ACT_TRACK[0], prefs.EO_ACT_TRACK[1])
         timeline.SetTrackName("video", prefs.EO_OPP_TRACK[0], prefs.EO_OPP_TRACK[1])
         timeline.SetTrackName("video", prefs.MCC_TRACK[0], prefs.MCC_TRACK[1])
@@ -150,6 +150,7 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
 
         
         #Set the visibility of tracks.
+        timeline.SetTrackEnable("video", prefs.EVENT_MARKER_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.EO_ACT_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.EO_OPP_TRACK[0], False)
         timeline.SetTrackEnable("video", prefs.MCC_TRACK[0], True)
@@ -165,15 +166,16 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
 
 def LockAllTracks(timeline):
         #Set the all tracks to locked
-        a = timeline.SetTrackLock("video", prefs.EO_ACT_TRACK[0], True)
-        b = timeline.SetTrackLock("video", prefs.EO_OPP_TRACK[0], True)
-        c = timeline.SetTrackLock("video", prefs.MCC_TRACK[0], True)
-        d = timeline.SetTrackLock("video", prefs.QUAD_TRACK[0], True)
+        a = timeline.SetTrackLock("video", prefs.EVENT_MARKER_TRACK[0], True)
+        b = timeline.SetTrackLock("video", prefs.EO_ACT_TRACK[0], True)
+        c = timeline.SetTrackLock("video", prefs.EO_OPP_TRACK[0], True)
+        d = timeline.SetTrackLock("video", prefs.MCC_TRACK[0], True)
+        e = timeline.SetTrackLock("video", prefs.QUAD_TRACK[0], True)
 
-        e = timeline.SetTrackLock("audio", prefs.PILOT_TRACK[0], True)
-        f = timeline.SetTrackLock("audio", prefs.COPILOT_TRACK[0], True)
-        g = timeline.SetTrackLock("audio", prefs.SO_TRACK[0], True)
-        h = timeline.SetTrackLock("audio", prefs.FE_TRACK[0], True)
+        f = timeline.SetTrackLock("audio", prefs.PILOT_TRACK[0], True)
+        g = timeline.SetTrackLock("audio", prefs.COPILOT_TRACK[0], True)
+        h = timeline.SetTrackLock("audio", prefs.SO_TRACK[0], True)
+        i = timeline.SetTrackLock("audio", prefs.FE_TRACK[0], True)
 
 
 def createProject(memo=None):
@@ -263,6 +265,9 @@ def createProject(memo=None):
             print()
             print()
         
+        
+        markerClip = CreateEventMarkerClip(proj)
+
         for tl in timelines:
             print(tl)
             proj.SetCurrentTimeline(tl.timeline)
@@ -270,12 +275,10 @@ def createProject(memo=None):
                 print(f'Event: {event.time}')
                 if tl.coversTimestamp(event.time):
                     frameID = tl.TimestampToFrameID(event.time)
-                    print(f'Event: {event}')
-                    print(f'frameID: {frameID}')
-                    print('-----------')
                     tl.timeline.AddMarker(frameID, MarkerColor.YELLOW, "Event", "", 1)
+                    InsertEventMarkerClip(tl, markerClip, prefs.EVENT_MARKER_TRACK[0], event.time, 75)                    
             res = LockAllTracks(tl.timeline)
-            
+
 
         t1 = time.perf_counter()  #Instrumentation
         print("Import complete")  #Progress used for debugging
