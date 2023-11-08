@@ -86,6 +86,6 @@ The following has been observed when playing back the video files
 | Software               | Version            | Observation                                                                                                              |
 |------------------------|--------------------|--------------------------------------------------------------------------------------------------------------------------|
 | Windows 11 photo app   | 2023.11050.16005.0 | Plays video with no noticeable problems.                                                                                 |
-| VLC                    | 3.0.18             | Garbled image on lower half of the video.                                                                                |
+| VLC                    | 3.0.18             | Garbled image on lower half of the video. ***SOLVED*** by disabling hardware acceleration in settings                    |
 | DaVinci Resolve (Free) | 18.1.4             | The missing frame is rendered as a red banner with the text **Media Offline**, the following frames are rendered correct |
 | DaVinci Resolve Studio | 18.1.4             | The missing frame is rendered as a solid grey frame, the following 5 frames are rendered grey with small artifacts       |
