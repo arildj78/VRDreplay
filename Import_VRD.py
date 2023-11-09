@@ -5,8 +5,35 @@ from prefs import MarkerColor
 import daVinciConnection
 
 import ctypes  # An included library with Python install.
+import win32gui
+
+DAVINCI_WINDOWTEXT = 'DaVinci Resolve Studio'
+
+class WindowHandles:
+    def __init__(self, windowText) -> None:
+        self.windowText = windowText
+        self.hWindows = []
+        self.foundHandle = False
+        self.numberOfHandles = 0
+
+    def EnumWindows_callback(self, hwnd, lParam):
+        windowText = win32gui.GetWindowText(hwnd)
+        if self.windowText in windowText:
+            self.hWindows.append(hwnd)
+            self.foundHandle = True
+            self.numberOfHandles = self.numberOfHandles + 1
+
+
+
+
 def Mbox(title, text, style):
-    return ctypes.windll.user32.MessageBoxW(0, text, title, style)
+    daVinciWindows = WindowHandles(DAVINCI_WINDOWTEXT)
+    
+    win32gui.EnumWindows(daVinciWindows.EnumWindows_callback, None)
+    hWnd = daVinciWindows.hWindows[0] #If multiple daVinci windows, use the first. TODO - Handle this better.
+    win32gui.SetForegroundWindow(hWnd)
+
+    return ctypes.windll.user32.MessageBoxW(hWnd, text, title, style)
 
 class MboxStyle:
     Ok = 0
