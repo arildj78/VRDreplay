@@ -66,16 +66,31 @@ The event files holds a timestamp for when the event switch has been toggled in 
 # Problems with the .mkv files
 There seems to be multiple problems with the .mkv video files. The following are beeing investigated.
 * Duration is one frame to short
+* For files in the Recovered_Segments folder, the file header is missing segment size
 * Missing frames
 * Codec issue during playback
 
 ## Duration
-*Segment information -> Duration (tag 0x4489)* is one frame to short. Typically each video file is 7500 frames but duration is set to 7499. The duration is given in ticks as a double and seems to be 1ms per tick. The exact value for ticks can be found in *Segment information -> Timestamp scale (tag 0x2AD7B1)* and is given in nanoseconds per tick. This script will assume 1ms pr tick and increase the duration of every file with 40ms to reveal the lost frame at the end of the clip.
+*Segment information -> Duration (element ID 0x4489)* is one frame too short. Typically each video file is 7500 frames but duration is set to 7499. The duration is given in ticks as a double and seems to be 1ms per tick. The exact value for ticks can be found in *Segment information -> Timestamp scale (element ID 0x2AD7B1)* and is given in nanoseconds per tick. This script will assume 1ms pr tick and increase the duration of every file with 40ms to reveal the lost frame at the end of the clip.
 
-| No of frames | No of ticks | Hex tag  | Double as hex            |
-|--------------|-------------|----------|--------------------------|
-| 7501         | 300 040     | 44 89 88 | 41 12 50 20 00 00 00 00  |
-| 7502         | 300 080     | 44 89 88 | 41 12 50 C0 00 00 00 00  |
+| No of frames | No of ticks | Element ID  | Size Length | Length | Double as hex            |
+|--------------|-------------|-------------|-------------|--------|--------------------------|
+| 7501         | 300 040     | 44 89       |           8 | 8      | 41 12 50 20 00 00 00 00  |
+| 7502         | 300 080     | 44 89       |           8 | 8      | 41 12 50 C0 00 00 00 00  |
+
+If the recording has ended abnormally, the file will likely be in a folder named `Recovered_Segments` without Duration `ID 0x4489` set correctly. In offset `0x160` you will rather find a void space of 11 bytes: `EC 01 00 00 00 00 00 00 02 00 00`. The fix for this is the same as above but we also need to write the Element ID `0x4489` as well as element size `0x88` followed by the 8 bytes of duration.
+
+Both of these duration related problems are handled by the fixMkv module.
+
+## Missing segment size
+It seems that video files in the Recoverd_Segments folder has segment size set to `01 FF FF FF FF FF FF FF` (unknown). fixMkv will change this to the size of the remainder of the file.
+
+| Offset | Element ID  | Size Length  | Size                  |
+|--------|-------------|--------------|-----------------------|
+| 0x2F   | 18 53 80 67 | 01=(7 bytes) | FF FF FF FF FF FF FF  |
+| 0x2F   | 18 53 80 67 | 01=(7 bytes) | File size - 59 bytes *|
+
+*) Offset 0x2F + 4 bytes Element ID + 8 bytes length descriptor = 59 bytes
 
 ## Missing frames
 The files seems to be of variable framerate close to 25 fps resulting in approximately 40ms pr frame. However, multiple frames in each clip are less than 0.05ms resulting in missing frames in DaVinci Resolve. This script handles this problem by assuming 25fps and cutting each file in multiple subclips based on the timings given in the .tag file effectively removing the missing frames.
@@ -89,3 +104,11 @@ The following has been observed when playing back the video files
 | VLC                    | 3.0.18             | Garbled image on lower half of the video. ***SOLVED*** by disabling hardware acceleration in settings                    |
 | DaVinci Resolve (Free) | 18.1.4             | The missing frame is rendered as a red banner with the text **Media Offline**, the following frames are rendered correct |
 | DaVinci Resolve Studio | 18.1.4             | The missing frame is rendered as a solid grey frame, the following 5 frames are rendered grey with small artifacts       |
+
+## Credit
+* [Finding drive letter from VID/PID with C++](https://itecnote.com/tecnote/c-find-and-eject-a-usb-device-based-on-its-vid-pid/)
+
+
+## References
+* [Matroska (MKV) technical specification](https://www.matroska.org/technical/elements.html)
+* [EBML specification](https://matroska-org.github.io/libebml/specs.html)
