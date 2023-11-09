@@ -27,7 +27,7 @@ import datetime
 from glob import glob
 from argparse import ArgumentParser
 import readTag
-from fixMkvDuration import fixMkvDuration
+from fixMkv import fixMkv
 from fixTagWrongStartTime import fixTagWrongStartTime
 from timeline import Timeline
 # settings
@@ -148,7 +148,7 @@ def createProject(memo=None):
 
         allMedia = GetAllMedia()
         uniqueEvents = GetUniqueEvents()
-        fixMkvDuration(allMedia)
+        fixMkv(allMedia)
         fixTagWrongStartTime(allMedia)
 
         mediaPool = proj.GetMediaPool()
@@ -195,8 +195,17 @@ def createProject(memo=None):
             
             timelines[timeLineCounter-1].endTime = media.stopTime #Update end of current timeline with the latest mediafile
             
-            medieaPoolItem = mediaStorage.AddItemListToMediaPool(media.mediaFile)
-
+            tryAgain = True
+            tryAgainCounter = 0
+            while tryAgain: 
+                medieaPoolItem = mediaStorage.AddItemListToMediaPool(media.mediaFile)
+                if medieaPoolItem == []:
+                    tryAgain = True
+                    tryAgainCounter = tryAgainCounter + 1
+                    print(f'{tryAgainCounter} retries to import file: {media.mediaFile}')
+                else:
+                    tryAgain = False
+            
 
             #if media.trackType == prefs.TrackType.VIDEO:
             print("Filename".ljust(53) + '\t' + "trackIndex" + '\t' + "Timeline start" + '\t' + "startFrame" + '\t' + "endFrame" + '\t' + "frameCount" + '\t' + "Timeline end")
