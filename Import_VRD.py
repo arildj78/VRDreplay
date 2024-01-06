@@ -233,8 +233,8 @@ def createProject(memo=None):
                 name = dtStartTime.strftime("%Y-%m-%d %H:%M:%S")
 
                 
-                print(f'Media.startTime{media.startTime}')
-                print(f'tl.startTime{media.subClips[0].StartSec}')
+                #print(f'Media.startTime{media.startTime}')
+                #print(f'tl.startTime{media.subClips[0].StartSec}')
 
                 tl = Timeline(createNewTimeline(mediaPool, name, media.startTime), mediaPool)
                 #tl.startTime = media.subClips[0].StartSec  # Replaced for debugging. startTime was set to the time of the second subclip
@@ -254,14 +254,14 @@ def createProject(memo=None):
                 if medieaPoolItem == []:
                     tryAgain = True
                     tryAgainCounter = tryAgainCounter + 1
-                    print(f'{tryAgainCounter} retries to import file: {media.mediaFile}')
+                    #print(f'{tryAgainCounter} retries to import file: {media.mediaFile}')
                 else:
                     tryAgain = False
             
 
             #if media.trackType == prefs.TrackType.VIDEO:
-            print("Filename".ljust(53) + '\t' + "trackIndex" + '\t' + "Timeline start" + '\t' + "startFrame" + '\t' + "endFrame" + '\t' + "frameCount" + '\t' + "Timeline end")
-            print("----------------------------------------------------------------------------------------------------------------------------------------------------")
+            #print("Filename".ljust(53) + '\t' + "trackIndex" + '\t' + "Timeline start" + '\t' + "startFrame" + '\t' + "endFrame" + '\t' + "frameCount" + '\t' + "Timeline end")
+            #print("----------------------------------------------------------------------------------------------------------------------------------------------------")
             for subClip in media.subClips:
                 newClip = {
                     "mediaPoolItem" : medieaPoolItem[0],                                 #The media file to be inserted
@@ -271,25 +271,25 @@ def createProject(memo=None):
                     "recordFrame" : subClip.clipFirstFrame + subClip.recordFrameFirst,   #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
                     "recordFrameEnd" :  subClip.clipFirstFrame + subClip.recordFrameLast #For debugging. The last frame on the timeline occupied by the clip
                 }
-                print(media.tagFile + '\t' +
-                        str(newClip["trackIndex"]).ljust(10) + '\t' + 
-                        str(newClip["recordFrame"]).ljust(14) + '\t' + 
-                        str(newClip["startFrame"]).ljust(10) + '\t' + 
-                        str(newClip["endFrame"]).ljust(8) + '\t' + 
-                        str(subClip.frameCount).ljust(10) + '\t' +
-                        str(newClip["recordFrameEnd"]).ljust(12))
+                # print(media.tagFile + '\t' +
+                #         str(newClip["trackIndex"]).ljust(10) + '\t' + 
+                #         str(newClip["recordFrame"]).ljust(14) + '\t' + 
+                #         str(newClip["startFrame"]).ljust(10) + '\t' + 
+                #         str(newClip["endFrame"]).ljust(8) + '\t' + 
+                #         str(subClip.frameCount).ljust(10) + '\t' +
+                #         str(newClip["recordFrameEnd"]).ljust(12))
                 mediaPool.AppendToTimeline( [newClip] )
-            print()
-            print()
+            # print()
+            # print()
         
         
         markerClip = CreateEventMarkerClip(proj)
 
         for tl in timelines:
-            print(tl)
+            #print(tl)
             proj.SetCurrentTimeline(tl.timeline)
             for event in uniqueEvents:
-                print(f'Event: {event.time}')
+                #print(f'Event: {event.time}')
                 if tl.coversTimestamp(event.time):
                     frameID = tl.TimestampToFrameID(event.time)
                     tl.timeline.AddMarker(frameID, MarkerColor.YELLOW, "Event", "", 1)
