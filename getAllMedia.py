@@ -8,6 +8,7 @@ from prefs import TrackType
 from mediaClip import MediaClip
 from readTag import ReadTag
 import reverseRead
+from tqdm import tqdm
 
 
 
@@ -15,22 +16,24 @@ import reverseRead
 def get_clip_start_stop_time(tagFile:str):
     startTime = 0
     stopTime = 0
-    try:
-        with open(tagFile, 'r') as fileobject:
-            next(fileobject)                   #Skip first line
-            startTime  = int(next(fileobject)) #Read line number 2 where the unix time for recording start is stored
+    #try:
+    with open(tagFile, 'r') as fileobject:
+        next(fileobject)                   #Skip first line
+        startTime  = int(next(fileobject)) #Read line number 2 where the unix time for recording start is stored
 
-            reversedTagFile = reverseRead.reversed_lines(fileobject)                    #Create a generator capable of reading lines from the end of a file
-            for lineNo in range(prefs.TAGFILE_LINES_TO_SCAN_FROM_END_TO_FIND_STOPTIME): #If it takes to many attempts to find the timestamp something is wrong
-                line = next(reversedTagFile)                                            #Read lines from the end of the .tag file
+        reversedTagFile = reverseRead.reversed_lines(fileobject)                    #Create a generator capable of reading lines from the end of a file
+        for lineNo in range(prefs.TAGFILE_LINES_TO_SCAN_FROM_END_TO_FIND_STOPTIME): #If it takes to many attempts to find the timestamp something is wrong
+            line = next(reversedTagFile)                                            #Read lines from the end of the .tag file
+            try:
                 value = int(line)            
                 if value >= 1e9:                                                        #If the line has a number >= 1e9 it is assumed to be a Epoch Unix Timestamp
                     stopTime = value
                     break
-
-    except:
-        startTime = 0
-        stopTime = 0
+            except:
+                pass
+    # except:
+    #     startTime = 0
+    #     stopTime = 0
     
     result = (startTime, stopTime)
     return result
@@ -59,9 +62,17 @@ def GetAllMedia(directories=prefs.RECORDING_DIRECTORIES) -> list[MediaClip]:
 
 
     #Look through all directories and subdirectories for all files and process them
+    filecounter = 0
     for dir in directories:
         for root, dirs, files in os.walk(dir):
             for file in files:
+                filecounter = filecounter + 1
+            
+    progressbar = tqdm(desc="Browsing files", total = filecounter) #tqdm creates a progress bar while iterating through
+    for dir in directories:
+        for root, dirs, files in os.walk(dir):
+            for file in files:
+                progressbar.update(1)
                 trackNumber = -1    #If the file beeing processed is a media file, this will get a valid number
                 trackType = "None"
 
@@ -141,18 +152,22 @@ def GetAllMedia(directories=prefs.RECORDING_DIRECTORIES) -> list[MediaClip]:
                     mc.trackType = trackType
                     mc.trackName = trackName
                     mc.trackNumber = trackNumber
+                    
                     try:
-                        mc.subClips = ReadTag(mc.tagFile, mc.trackType)
+                        if mc.tagFile != '':
+                            mc.subClips = ReadTag(mc.tagFile, mc.trackType)
                     except:
                         # TODO - Handle missing .tag file
+                        print(f'missing tagfile: {mc.mediaFile}')
+                        print(f'missing tagfile: {mc.tagFile}')
                         raise Exception(prefs.EXCEPTION_MSG_MISSING_TAG_FILE)
                     mediaFiles.append(mc)
-                    
+    progressbar.close()          
                     
                     
     #Sort the clips and assign them to timelines
     mediaFiles.sort()
-    previousClip_StopTime = 0
+    previousClip_StopTime = 0 - prefs.EMPTY_SECONDS_BEFORE_NEW_TIMELINE - 1
     currentTimeline = -1
 
     for mediaFile in mediaFiles:

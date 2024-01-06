@@ -6,8 +6,11 @@ import daVinciConnection
 
 import ctypes  # An included library with Python install.
 import win32gui
+import win32com.client
 
-DAVINCI_WINDOWTEXT = 'DaVinci Resolve Studio'
+from tqdm import tqdm
+
+DAVINCI_WINDOWTEXT = 'DaVinci Resolve'
 
 class WindowHandles:
     def __init__(self, windowText) -> None:
@@ -30,7 +33,11 @@ def Mbox(title, text, style):
     daVinciWindows = WindowHandles(DAVINCI_WINDOWTEXT)
     
     win32gui.EnumWindows(daVinciWindows.EnumWindows_callback, None)
-    hWnd = daVinciWindows.hWindows[0] #If multiple daVinci windows, use the first. TODO - Handle this better.
+    hWnd = daVinciWindows.hWindows[0] #If multiple daVinci windows, use the first. TODO - Handle this better. TODO - Handle hWnd.len() = 0
+
+    shell = win32com.client.Dispatch("WScript.Shell")
+    shell.SendKeys('%') #Send left Alt key to let Windows change the foreground window. Failure to send the Alt makes SetForegroundWindow fail if another app is on top.
+
     win32gui.SetForegroundWindow(hWnd)
 
     return ctypes.windll.user32.MessageBoxW(hWnd, text, title, style)
@@ -114,6 +121,12 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.AddTrack("video")
         timeline.AddTrack("video")
         timeline.AddTrack("video")
+        timeline.AddTrack("video")
+        timeline.AddTrack("video")
+        timeline.AddTrack("video")
+        timeline.AddTrack("audio", "stereo")
+        timeline.AddTrack("audio", "stereo")
+        timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
@@ -121,6 +134,9 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
 
         #Set the names of tracks
         timeline.SetTrackName("video", prefs.EVENT_MARKER_TRACK[0], prefs.EVENT_MARKER_TRACK[1])
+        timeline.SetTrackName("video", prefs.RMCAM_TRACK[0], prefs.RMCAM_TRACK[1])
+        timeline.SetTrackName("video", prefs.DOCCAM_TRACK[0], prefs.DOCCAM_TRACK[1])
+        timeline.SetTrackName("video", prefs.SOFECAM_TRACK[0], prefs.SOFECAM_TRACK[1])
         timeline.SetTrackName("video", prefs.EO_ACT_TRACK[0], prefs.EO_ACT_TRACK[1])
         timeline.SetTrackName("video", prefs.EO_OPP_TRACK[0], prefs.EO_OPP_TRACK[1])
         timeline.SetTrackName("video", prefs.MCC_TRACK[0], prefs.MCC_TRACK[1])
@@ -130,10 +146,16 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.SetTrackName("audio",prefs.COPILOT_TRACK[0], prefs.COPILOT_TRACK[1])
         timeline.SetTrackName("audio",prefs.SO_TRACK[0], prefs.SO_TRACK[1])
         timeline.SetTrackName("audio",prefs.FE_TRACK[0], prefs.FE_TRACK[1])
+        timeline.SetTrackName("audio",prefs.SOFECAM_AUDIO_TRACK[0], prefs.SOFECAM_AUDIO_TRACK[1])
+        timeline.SetTrackName("audio",prefs.DOCCAM_AUDIO_TRACK[0], prefs.DOCCAM_AUDIO_TRACK[1])
+        timeline.SetTrackName("audio",prefs.RMCAM_AUDIO_TRACK[0], prefs.RMCAM_AUDIO_TRACK[1])
 
         
         #Set the visibility of tracks.
         timeline.SetTrackEnable("video", prefs.EVENT_MARKER_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.RMCAM_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.DOCCAM_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.SOFECAM_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.EO_ACT_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.EO_OPP_TRACK[0], False)
         timeline.SetTrackEnable("video", prefs.MCC_TRACK[0], True)
@@ -143,6 +165,9 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.SetTrackEnable("audio", prefs.COPILOT_TRACK[0], False)
         timeline.SetTrackEnable("audio", prefs.SO_TRACK[0], False)
         timeline.SetTrackEnable("audio", prefs.FE_TRACK[0], False)
+        timeline.SetTrackEnable("audio", prefs.SOFECAM_AUDIO_TRACK[0], False)
+        timeline.SetTrackEnable("audio", prefs.DOCCAM_AUDIO_TRACK[0], False)
+        timeline.SetTrackEnable("audio", prefs.RMCAM_AUDIO_TRACK[0], False)
 
         return timeline
 
@@ -195,7 +220,7 @@ def createProject(memo=None):
         timeLineCounter = 0
         timeLineStartFrame = 0
         
-        for media in allMedia:
+        for media in tqdm(allMedia): #tqdm creates a progress bar while iterating through allMedia
 
             if media.startOfTimeline:
                 timeLineCounter = timeLineCounter + 1
@@ -208,8 +233,8 @@ def createProject(memo=None):
                 name = dtStartTime.strftime("%Y-%m-%d %H:%M:%S")
 
                 
-                print(f'Media.startTime{media.startTime}')
-                print(f'tl.startTime{media.subClips[0].StartSec}')
+                #print(f'Media.startTime{media.startTime}')
+                #print(f'tl.startTime{media.subClips[0].StartSec}')
 
                 tl = Timeline(createNewTimeline(mediaPool, name, media.startTime), mediaPool)
                 #tl.startTime = media.subClips[0].StartSec  # Replaced for debugging. startTime was set to the time of the second subclip
@@ -224,19 +249,24 @@ def createProject(memo=None):
             
             tryAgain = True
             tryAgainCounter = 0
-            while tryAgain: 
+            while tryAgainCounter < 10 and tryAgain: 
                 medieaPoolItem = mediaStorage.AddItemListToMediaPool(media.mediaFile)
                 if medieaPoolItem == []:
                     tryAgain = True
                     tryAgainCounter = tryAgainCounter + 1
-                    print(f'{tryAgainCounter} retries to import file: {media.mediaFile}')
+                    #print(f'{tryAgainCounter} retries to import file: {media.mediaFile}')
                 else:
                     tryAgain = False
             
+            if tryAgain:
+                #tryAgain has not been reset meaning that the tryAgainCounter has expired and this file is abandoned
+                print(f'Unable to import file after {tryAgainCounter} attempts: {media.mediaFile}')
+                continue # Move on to the next file in allMedia
+            
 
             #if media.trackType == prefs.TrackType.VIDEO:
-            print("Filename".ljust(53) + '\t' + "trackIndex" + '\t' + "Timeline start" + '\t' + "startFrame" + '\t' + "endFrame" + '\t' + "frameCount" + '\t' + "Timeline end")
-            print("----------------------------------------------------------------------------------------------------------------------------------------------------")
+            #print("Filename".ljust(53) + '\t' + "trackIndex" + '\t' + "Timeline start" + '\t' + "startFrame" + '\t' + "endFrame" + '\t' + "frameCount" + '\t' + "Timeline end")
+            #print("----------------------------------------------------------------------------------------------------------------------------------------------------")
             for subClip in media.subClips:
                 newClip = {
                     "mediaPoolItem" : medieaPoolItem[0],                                 #The media file to be inserted
@@ -246,25 +276,25 @@ def createProject(memo=None):
                     "recordFrame" : subClip.clipFirstFrame + subClip.recordFrameFirst,   #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
                     "recordFrameEnd" :  subClip.clipFirstFrame + subClip.recordFrameLast #For debugging. The last frame on the timeline occupied by the clip
                 }
-                print(media.tagFile + '\t' +
-                        str(newClip["trackIndex"]).ljust(10) + '\t' + 
-                        str(newClip["recordFrame"]).ljust(14) + '\t' + 
-                        str(newClip["startFrame"]).ljust(10) + '\t' + 
-                        str(newClip["endFrame"]).ljust(8) + '\t' + 
-                        str(subClip.frameCount).ljust(10) + '\t' +
-                        str(newClip["recordFrameEnd"]).ljust(12))
+                # print(media.tagFile + '\t' +
+                #         str(newClip["trackIndex"]).ljust(10) + '\t' + 
+                #         str(newClip["recordFrame"]).ljust(14) + '\t' + 
+                #         str(newClip["startFrame"]).ljust(10) + '\t' + 
+                #         str(newClip["endFrame"]).ljust(8) + '\t' + 
+                #         str(subClip.frameCount).ljust(10) + '\t' +
+                #         str(newClip["recordFrameEnd"]).ljust(12))
                 mediaPool.AppendToTimeline( [newClip] )
-            print()
-            print()
+            # print()
+            # print()
         
         
         markerClip = CreateEventMarkerClip(proj)
 
         for tl in timelines:
-            print(tl)
+            #print(tl)
             proj.SetCurrentTimeline(tl.timeline)
             for event in uniqueEvents:
-                print(f'Event: {event.time}')
+                #print(f'Event: {event.time}')
                 if tl.coversTimestamp(event.time):
                     frameID = tl.TimestampToFrameID(event.time)
                     tl.timeline.AddMarker(frameID, MarkerColor.YELLOW, "Event", "", 1)

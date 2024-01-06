@@ -9,7 +9,10 @@ EMPTY_SECONDS_BEFORE_NEW_TIMELINE = 60
 
 TIMELINE_FPS = 25
 
-EVENT_MARKER_TRACK = (5, "Event Marker")
+EVENT_MARKER_TRACK = (8, "Event Marker")
+RMCAM_TRACK = (7, "RM Cam")
+DOCCAM_TRACK = (6, "Doc Cam")
+SOFECAM_TRACK = (5, "SO FE Cam")
 EO_ACT_TRACK = (4, "EO Active")
 EO_OPP_TRACK = (3, "EO Opposite")
 MCC_TRACK = (2, "MCC")
@@ -19,6 +22,9 @@ PILOT_TRACK = (1, "Pilot")
 COPILOT_TRACK = (2, "CoPilot")
 SO_TRACK = (3, "SO")
 FE_TRACK = (4, "FE")
+SOFECAM_AUDIO_TRACK = (5, "SO FE Cam")
+DOCCAM_AUDIO_TRACK = (6, "Doc Cam")
+RMCAM_AUDIO_TRACK = (7, "RM Cam")
 
 class TrackType():
     #Alias to different types of tracks in the timeline
