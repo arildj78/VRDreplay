@@ -164,7 +164,7 @@ def GetAllMedia(directories=prefs.RECORDING_DIRECTORIES) -> list[MediaClip]:
                     
     #Sort the clips and assign them to timelines
     mediaFiles.sort()
-    previousClip_StopTime = 0
+    previousClip_StopTime = 0 - prefs.EMPTY_SECONDS_BEFORE_NEW_TIMELINE - 1
     currentTimeline = -1
 
     for mediaFile in mediaFiles:
