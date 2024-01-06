@@ -249,7 +249,7 @@ def createProject(memo=None):
             
             tryAgain = True
             tryAgainCounter = 0
-            while tryAgain: 
+            while tryAgainCounter < 10 and tryAgain: 
                 medieaPoolItem = mediaStorage.AddItemListToMediaPool(media.mediaFile)
                 if medieaPoolItem == []:
                     tryAgain = True
@@ -257,6 +257,11 @@ def createProject(memo=None):
                     #print(f'{tryAgainCounter} retries to import file: {media.mediaFile}')
                 else:
                     tryAgain = False
+            
+            if tryAgain:
+                #tryAgain has not been reset meaning that the tryAgainCounter has expired and this file is abandoned
+                print(f'Unable to import file after {tryAgainCounter} attempts: {media.mediaFile}')
+                continue # Move on to the next file in allMedia
             
 
             #if media.trackType == prefs.TrackType.VIDEO:
