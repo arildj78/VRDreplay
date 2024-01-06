@@ -6,6 +6,8 @@ import daVinciConnection
 
 import ctypes  # An included library with Python install.
 import win32gui
+import win32com.client
+
 from tqdm import tqdm
 
 DAVINCI_WINDOWTEXT = 'DaVinci Resolve'
@@ -31,7 +33,11 @@ def Mbox(title, text, style):
     daVinciWindows = WindowHandles(DAVINCI_WINDOWTEXT)
     
     win32gui.EnumWindows(daVinciWindows.EnumWindows_callback, None)
-    hWnd = daVinciWindows.hWindows[0] #If multiple daVinci windows, use the first. TODO - Handle this better.
+    hWnd = daVinciWindows.hWindows[0] #If multiple daVinci windows, use the first. TODO - Handle this better. TODO - Handle hWnd.len() = 0
+
+    shell = win32com.client.Dispatch("WScript.Shell")
+    shell.SendKeys('%') #Send left Alt key to let Windows change the foreground window. Failure to send the Alt makes SetForegroundWindow fail if another app is on top.
+
     win32gui.SetForegroundWindow(hWnd)
 
     return ctypes.windll.user32.MessageBoxW(hWnd, text, title, style)
