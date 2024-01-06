@@ -8,7 +8,7 @@ from prefs import TrackType
 from mediaClip import MediaClip
 from readTag import ReadTag
 import reverseRead
-from tqdm import trange
+from tqdm import tqdm
 
 
 
@@ -68,12 +68,11 @@ def GetAllMedia(directories=prefs.RECORDING_DIRECTORIES) -> list[MediaClip]:
             for file in files:
                 filecounter = filecounter + 1
             
-    progressbar = trange(range(filecounter),"Browsing files", filecounter) #tqdm creates a progress bar while iterating through
- 
+    progressbar = tqdm(desc="Browsing files", total = filecounter) #tqdm creates a progress bar while iterating through
     for dir in directories:
         for root, dirs, files in os.walk(dir):
-            for file in files: 
-                progressbar.refresh
+            for file in files:
+                progressbar.update(1)
                 trackNumber = -1    #If the file beeing processed is a media file, this will get a valid number
                 trackType = "None"
 
@@ -163,7 +162,7 @@ def GetAllMedia(directories=prefs.RECORDING_DIRECTORIES) -> list[MediaClip]:
                         print(f'missing tagfile: {mc.tagFile}')
                         raise Exception(prefs.EXCEPTION_MSG_MISSING_TAG_FILE)
                     mediaFiles.append(mc)
-                    
+    progressbar.close()          
                     
                     
     #Sort the clips and assign them to timelines
