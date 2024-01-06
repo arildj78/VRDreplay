@@ -87,7 +87,7 @@ def readTagfile(filename:str, mediaType:prefs.TrackType) -> list[Frame]:
             except StopIteration:
                 break
             except Exception as e:
-                print(f"This didn't go as well: {str(e)}")
+                print(f"This didn't go as well. File:{filename} Error:{str(e)}")
     return frames
 
 

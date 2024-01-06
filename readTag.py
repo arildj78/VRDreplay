@@ -127,7 +127,8 @@ def ReadTag(tagFile:str, trackType:prefs.TrackType) -> list[SubClip]:
             except StopIteration:
                 break
             except Exception as e:
-                print(f"This didn't go as well: {str(e)}")
+                print(f"This didn't go as well. File:{tagFile} Error:{str(e)}")
+
 
 
     #Calculate frame durations
