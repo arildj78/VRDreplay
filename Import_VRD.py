@@ -115,6 +115,12 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.AddTrack("video")
         timeline.AddTrack("video")
         timeline.AddTrack("video")
+        timeline.AddTrack("video")
+        timeline.AddTrack("video")
+        timeline.AddTrack("video")
+        timeline.AddTrack("audio", "stereo")
+        timeline.AddTrack("audio", "stereo")
+        timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
@@ -122,6 +128,9 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
 
         #Set the names of tracks
         timeline.SetTrackName("video", prefs.EVENT_MARKER_TRACK[0], prefs.EVENT_MARKER_TRACK[1])
+        timeline.SetTrackName("video", prefs.RMCAM_TRACK[0], prefs.RMCAM_TRACK[1])
+        timeline.SetTrackName("video", prefs.DOCCAM_TRACK[0], prefs.DOCCAM_TRACK[1])
+        timeline.SetTrackName("video", prefs.SOFECAM_TRACK[0], prefs.SOFECAM_TRACK[1])
         timeline.SetTrackName("video", prefs.EO_ACT_TRACK[0], prefs.EO_ACT_TRACK[1])
         timeline.SetTrackName("video", prefs.EO_OPP_TRACK[0], prefs.EO_OPP_TRACK[1])
         timeline.SetTrackName("video", prefs.MCC_TRACK[0], prefs.MCC_TRACK[1])
@@ -131,10 +140,16 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.SetTrackName("audio",prefs.COPILOT_TRACK[0], prefs.COPILOT_TRACK[1])
         timeline.SetTrackName("audio",prefs.SO_TRACK[0], prefs.SO_TRACK[1])
         timeline.SetTrackName("audio",prefs.FE_TRACK[0], prefs.FE_TRACK[1])
+        timeline.SetTrackName("audio",prefs.SOFECAM_AUDIO_TRACK[0], prefs.SOFECAM_AUDIO_TRACK[1])
+        timeline.SetTrackName("audio",prefs.DOCCAM_AUDIO_TRACK[0], prefs.DOCCAM_AUDIO_TRACK[1])
+        timeline.SetTrackName("audio",prefs.RMCAM_AUDIO_TRACK[0], prefs.RMCAM_AUDIO_TRACK[1])
 
         
         #Set the visibility of tracks.
         timeline.SetTrackEnable("video", prefs.EVENT_MARKER_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.RMCAM_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.DOCCAM_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.SOFECAM_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.EO_ACT_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.EO_OPP_TRACK[0], False)
         timeline.SetTrackEnable("video", prefs.MCC_TRACK[0], True)
@@ -144,6 +159,9 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.SetTrackEnable("audio", prefs.COPILOT_TRACK[0], False)
         timeline.SetTrackEnable("audio", prefs.SO_TRACK[0], False)
         timeline.SetTrackEnable("audio", prefs.FE_TRACK[0], False)
+        timeline.SetTrackEnable("audio", prefs.SOFECAM_AUDIO_TRACK[0], False)
+        timeline.SetTrackEnable("audio", prefs.DOCCAM_AUDIO_TRACK[0], False)
+        timeline.SetTrackEnable("audio", prefs.RMCAM_AUDIO_TRACK[0], False)
 
         return timeline
 
