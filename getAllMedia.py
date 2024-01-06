@@ -8,6 +8,7 @@ from prefs import TrackType
 from mediaClip import MediaClip
 from readTag import ReadTag
 import reverseRead
+from tqdm import trange
 
 
 
@@ -59,9 +60,18 @@ def GetAllMedia(directories=prefs.RECORDING_DIRECTORIES) -> list[MediaClip]:
 
 
     #Look through all directories and subdirectories for all files and process them
+    filecounter = 0
     for dir in directories:
         for root, dirs, files in os.walk(dir):
             for file in files:
+                filecounter = filecounter + 1
+            
+    progressbar = trange(range(filecounter),"Browsing files", filecounter) #tqdm creates a progress bar while iterating through
+ 
+    for dir in directories:
+        for root, dirs, files in os.walk(dir):
+            for file in files: 
+                progressbar.refresh
                 trackNumber = -1    #If the file beeing processed is a media file, this will get a valid number
                 trackType = "None"
 

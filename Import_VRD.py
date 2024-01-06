@@ -6,6 +6,7 @@ import daVinciConnection
 
 import ctypes  # An included library with Python install.
 import win32gui
+from tqdm import tqdm
 
 DAVINCI_WINDOWTEXT = 'DaVinci Resolve Studio'
 
@@ -195,7 +196,7 @@ def createProject(memo=None):
         timeLineCounter = 0
         timeLineStartFrame = 0
         
-        for media in allMedia:
+        for media in tqdm(allMedia): #tqdm creates a progress bar while iterating through allMedia
 
             if media.startOfTimeline:
                 timeLineCounter = timeLineCounter + 1

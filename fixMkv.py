@@ -4,6 +4,7 @@ from readTag import ReadTag
 import struct
 import os
 from mediaClip import MediaClip
+from tqdm import tqdm
 
 
 
@@ -133,7 +134,7 @@ def fixMkv(allMedia:list[MediaClip]):
     videoFiles = sorted(videoFiles, key = lambda x: (x.trackNumber, x.startTime))         #Sort by trackNumber then startTime
 
 
-    for clip in videoFiles:
+    for clip in tqdm(videoFiles): #tqdm creates a progress bar while iterating through allMedia
 
         mkvDuration = ReadMkvDuration(clip.mediaFile) 
         endFrame = clip.subClips[-1].endFrame

@@ -1,6 +1,7 @@
 import prefs
 from datetime import datetime
 from mediaClip import MediaClip
+from tqdm import tqdm
 
 
 GOOD_FILE_TIME = 1577833200    #2020-01-01
@@ -157,7 +158,7 @@ def PrintAllStartTimes(allMedia:list[MediaClip]):
 def fixTagWrongStartTime(allMedia:list[MediaClip]):
     fixedFiles = []
 
-    for clip in allMedia:
+    for clip in tqdm(allMedia):  #tqdm creates a progress bar while iterating through allMedia 
         frames = readTagfile(clip.tagFile, clip.trackType)
 
         if NeedsPathcing(frames):
