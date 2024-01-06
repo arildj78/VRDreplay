@@ -153,10 +153,14 @@ def GetAllMedia(directories=prefs.RECORDING_DIRECTORIES) -> list[MediaClip]:
                     mc.trackType = trackType
                     mc.trackName = trackName
                     mc.trackNumber = trackNumber
+                    
                     try:
-                        mc.subClips = ReadTag(mc.tagFile, mc.trackType)
+                        if mc.tagFile != '':
+                            mc.subClips = ReadTag(mc.tagFile, mc.trackType)
                     except:
                         # TODO - Handle missing .tag file
+                        print(f'missing tagfile: {mc.mediaFile}')
+                        print(f'missing tagfile: {mc.tagFile}')
                         raise Exception(prefs.EXCEPTION_MSG_MISSING_TAG_FILE)
                     mediaFiles.append(mc)
                     
