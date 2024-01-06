@@ -16,22 +16,24 @@ from tqdm import trange
 def get_clip_start_stop_time(tagFile:str):
     startTime = 0
     stopTime = 0
-    try:
-        with open(tagFile, 'r') as fileobject:
-            next(fileobject)                   #Skip first line
-            startTime  = int(next(fileobject)) #Read line number 2 where the unix time for recording start is stored
+    #try:
+    with open(tagFile, 'r') as fileobject:
+        next(fileobject)                   #Skip first line
+        startTime  = int(next(fileobject)) #Read line number 2 where the unix time for recording start is stored
 
-            reversedTagFile = reverseRead.reversed_lines(fileobject)                    #Create a generator capable of reading lines from the end of a file
-            for lineNo in range(prefs.TAGFILE_LINES_TO_SCAN_FROM_END_TO_FIND_STOPTIME): #If it takes to many attempts to find the timestamp something is wrong
-                line = next(reversedTagFile)                                            #Read lines from the end of the .tag file
+        reversedTagFile = reverseRead.reversed_lines(fileobject)                    #Create a generator capable of reading lines from the end of a file
+        for lineNo in range(prefs.TAGFILE_LINES_TO_SCAN_FROM_END_TO_FIND_STOPTIME): #If it takes to many attempts to find the timestamp something is wrong
+            line = next(reversedTagFile)                                            #Read lines from the end of the .tag file
+            try:
                 value = int(line)            
                 if value >= 1e9:                                                        #If the line has a number >= 1e9 it is assumed to be a Epoch Unix Timestamp
                     stopTime = value
                     break
-
-    except:
-        startTime = 0
-        stopTime = 0
+            except:
+                pass
+    # except:
+    #     startTime = 0
+    #     stopTime = 0
     
     result = (startTime, stopTime)
     return result
