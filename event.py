@@ -162,7 +162,8 @@ def CreateEventMarkerClip(project):
     # Read the fusion composition that creates the Event Marker Graphics from the file 'event.comp'
     # This file can be modified by creating a new composition and then copying it by selecting all the nodes, Ctrl-C and
     # then pasting it into the file before saving it.
-    with open("C:\\Users\\arild\\AppData\\Roaming\\Blackmagic Design\\DaVinci Resolve\\Support\\Fusion\\Scripts\\Comp\\VRDreplay\\event.comp") as file:
+    #with open("C:\\Users\\arild\\AppData\\Roaming\\Blackmagic Design\\DaVinci Resolve\\Support\\Fusion\\Scripts\\Comp\\VRDreplay\\event.comp") as file:
+    with open(os.path.dirname(__file__) + "\\fusionComposition\event.comp") as file:
         data = file.read()
 
     #Put the composition on the clipboard
@@ -204,13 +205,13 @@ def CreateEventMarkerClip(project):
     try:
         oldMediaOut = fc.FindTool('MediaOut1')
         oldMediaOut.Delete()
-    finally:
-        pass
+    except:
+        raise Exception("Unable to find MediaOut1 after creating a new fusion composition. Call for help :)")
 
     try:
         LastNode = fc.FindTool('Merge99')
         fc.SetActiveTool(LastNode)
-    finally:
+    except:
         print('Unable to find Merge99 which should be the last merge node in the event composition.')
 
 
@@ -224,7 +225,7 @@ def CreateEventMarkerClip(project):
 
     compoundClip = timeLine.CreateCompoundClip(fusionTimeLine)
     mediaPoolItem = compoundClip.GetMediaPoolItem()
-
+    mediaPoolItem.SetClipProperty("Clip Name", "EventGraphic")
     mediaPool.DeleteTimelines(timeLine)
 
     return mediaPoolItem
