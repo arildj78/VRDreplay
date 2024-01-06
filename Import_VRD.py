@@ -8,7 +8,7 @@ import ctypes  # An included library with Python install.
 import win32gui
 from tqdm import tqdm
 
-DAVINCI_WINDOWTEXT = 'DaVinci Resolve Studio'
+DAVINCI_WINDOWTEXT = 'DaVinci Resolve'
 
 class WindowHandles:
     def __init__(self, windowText) -> None:
