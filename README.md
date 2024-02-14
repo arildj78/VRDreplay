@@ -4,7 +4,7 @@ Script for DaVinci Resolve to import and sync audio and video from the 101
 ## Prerequisite
 Version tested in parenthesis
 * DaVinci Resolve Studio (18.1 build 16)
-* Python (3.10.10)
+* Python (3.10.10) and (3.11.1)
 * [PyUSB](https://github.com/pyusb/pyusb)
 * [libusb-package](https://github.com/pyocd/libusb-package)
 * Create a Project setting named **Debrief** in Resolve
