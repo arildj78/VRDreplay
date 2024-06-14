@@ -216,10 +216,12 @@ def createProject(memo=None):
         fixTagWrongStartTime(allMedia)
 
         mediaPool = proj.GetMediaPool()
-
-
-
-
+        root_folder = mediaPool.GetRootFolder()
+        rawMaterial_folder = mediaPool.AddSubFolder(root_folder, 'Raw material')
+        composite_folder =  mediaPool.AddSubFolder(root_folder, 'Composite')
+        video_folder = mediaPool.AddSubFolder(rawMaterial_folder, 'Video')
+        audio_folder = mediaPool.AddSubFolder(rawMaterial_folder, 'Audio')
+        graphics_folder = mediaPool.AddSubFolder(rawMaterial_folder, 'Graphics')
 
         i=0                      #Progress used for debugging
         print("Starting import") #Progress used for debugging
@@ -233,6 +235,8 @@ def createProject(memo=None):
         timeLineStartFrame = 0
         
         for media in tqdm(allMedia): #tqdm creates a progress bar while iterating through allMedia
+
+
 
             if media.startOfTimeline:
                 timeLineCounter = timeLineCounter + 1
@@ -248,6 +252,8 @@ def createProject(memo=None):
                 #print(f'Media.startTime{media.startTime}')
                 #print(f'tl.startTime{media.subClips[0].StartSec}')
 
+                mediaPool.SetCurrentFolder(root_folder)
+                
                 tl = Timeline(createNewTimeline(mediaPool, name, media.startTime), mediaPool)
                 #tl.startTime = media.subClips[0].StartSec  # Replaced for debugging. startTime was set to the time of the second subclip
                 tl.startTime = media.startTime
@@ -259,6 +265,13 @@ def createProject(memo=None):
             
             timelines[timeLineCounter-1].endTime = media.stopTime #Update end of current timeline with the latest mediafile
             
+
+
+            if media.trackType == prefs.TrackType.VIDEO :
+                mediaPool.SetCurrentFolder(video_folder)
+            if media.trackType == prefs.TrackType.AUDIO :
+                mediaPool.SetCurrentFolder(audio_folder)
+
             tryAgain = True
             tryAgainCounter = 0
             while tryAgainCounter < 10 and tryAgain: 
@@ -280,6 +293,8 @@ def createProject(memo=None):
             #if media.trackType == prefs.TrackType.VIDEO:
             #print("Filename".ljust(53) + '\t' + "trackIndex" + '\t' + "Timeline start" + '\t' + "startFrame" + '\t' + "endFrame" + '\t' + "frameCount" + '\t' + "Timeline end")
             #print("----------------------------------------------------------------------------------------------------------------------------------------------------")
+
+
             for subClip in media.subClips:
                 newClip = {
                     "mediaPoolItem" : medieaPoolItem[0],                                 #The media file to be inserted
@@ -301,8 +316,11 @@ def createProject(memo=None):
             # print()
         
         
+        mediaPool.SetCurrentFolder(graphics_folder)
         markerClip = CreateEventMarkerClip(proj)
+        
 
+        mediaPool.SetCurrentFolder(composite_folder)
         for tl in timelines:
             #print(tl)
             proj.SetCurrentTimeline(tl.timeline)
@@ -406,6 +424,9 @@ def createProject(memo=None):
                     InsertEventMarkerClip(tl, markerClip, prefs.EVENT_MARKER_TRACK[0], event.time, 75)                    
             res = LockAllTracks(tl.timeline)
 
+
+
+        mediaPool.SetCurrentFolder(root_folder)
 
         t1 = time.perf_counter()  #Instrumentation
         print("Import complete")  #Progress used for debugging
