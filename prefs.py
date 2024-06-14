@@ -54,8 +54,7 @@ class MarkerColor():
 
 
 RECORDING_DIRECTORIES = [
-    #'F:\\AW101\\Disk1\\vrd_database' ,
-    'F:\\AW101\\tempCopy' ,
+    'D:\\vrd_database' ,
 ]
 # Match filenames of the following format EO_ACT_0000_000.mkv (The $ ensures that the filename ends with .mkv)
 
