@@ -56,6 +56,9 @@ class MarkerColor():
 RECORDING_DIRECTORIES = [
     'D:\\vrd_database' ,
 ]
+
+FUSION_COMPOSITION_SUBFOLDER = 'fusionComposition'
+EVENTMARKER_FUSION_COMPOSITION_FILE = 'event.comp'
 # Match filenames of the following format EO_ACT_0000_000.mkv (The $ ensures that the filename ends with .mkv)
 
 #*********************
