@@ -252,6 +252,7 @@ def createProject(memo=None):
             while tryAgainCounter < 10 and tryAgain: 
                 medieaPoolItem = mediaStorage.AddItemListToMediaPool(media.mediaFile)
                 if medieaPoolItem == []:
+    
                     tryAgain = True
                     tryAgainCounter = tryAgainCounter + 1
                     #print(f'{tryAgainCounter} retries to import file: {media.mediaFile}')
@@ -293,6 +294,37 @@ def createProject(memo=None):
         for tl in timelines:
             #print(tl)
             proj.SetCurrentTimeline(tl.timeline)
+
+            #Join all video clips in each video track to a new compound clip
+            quadtrack_items = tl.timeline.GetItemListInTrack(prefs.TrackType.VIDEO,  prefs.QUAD_TRACK[0])
+            mcc_items       = tl.timeline.GetItemListInTrack(prefs.TrackType.VIDEO,  prefs.MCC_TRACK[0])
+            eo_opp_items    = tl.timeline.GetItemListInTrack(prefs.TrackType.VIDEO,  prefs.EO_OPP_TRACK[0])
+            eo_act_items    = tl.timeline.GetItemListInTrack(prefs.TrackType.VIDEO,  prefs.EO_ACT_TRACK[0])
+            quadtrack_clip_info = {"name" : prefs.QUAD_TRACK[1]   + '_' + tl.name}
+            mcc_clip_info       = {"name" : prefs.MCC_TRACK[1]    + '_' + tl.name}
+            eo_opp_clip_info    = {"name" : prefs.EO_OPP_TRACK[1] + '_' + tl.name}
+            eo_act_clip_info    = {"name" : prefs.EO_ACT_TRACK[1] + '_' + tl.name}
+            quad_compound = tl.timeline.CreateCompoundClip(quadtrack_items, quadtrack_clip_info)
+            tl.timeline.CreateCompoundClip(mcc_items, mcc_clip_info)
+            tl.timeline.CreateCompoundClip(eo_opp_items, eo_opp_clip_info)
+            tl.timeline.CreateCompoundClip(eo_act_items, eo_act_clip_info)
+
+            #Join all audio clips in each video track to a new compound clip
+            pilot_items   = tl.timeline.GetItemListInTrack(prefs.TrackType.AUDIO,  prefs.PILOT_TRACK[0])
+            copilot_items = tl.timeline.GetItemListInTrack(prefs.TrackType.AUDIO,  prefs.COPILOT_TRACK[0])
+            so_items      = tl.timeline.GetItemListInTrack(prefs.TrackType.AUDIO,  prefs.SO_TRACK[0])
+            fe_items      = tl.timeline.GetItemListInTrack(prefs.TrackType.AUDIO,  prefs.FE_TRACK[0])
+            pilot_clip_info   = {"name" : prefs.PILOT_TRACK[1]   + '_' + tl.name}
+            copilot_clip_info = {"name" : prefs.COPILOT_TRACK[1] + '_' + tl.name}
+            so_clip_info      = {"name" : prefs.SO_TRACK[1]      + '_' + tl.name}
+            fe_clip_info      = {"name" : prefs.FE_TRACK[1]      + '_' + tl.name}
+            tl.timeline.CreateCompoundClip(pilot_items, pilot_clip_info)
+            tl.timeline.CreateCompoundClip(copilot_items, copilot_clip_info)
+            tl.timeline.CreateCompoundClip(so_items, so_clip_info)
+            tl.timeline.CreateCompoundClip(fe_items, fe_clip_info)
+
+
+
             for event in uniqueEvents:
                 #print(f'Event: {event.time}')
                 if tl.coversTimestamp(event.time):
