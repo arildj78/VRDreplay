@@ -9,13 +9,16 @@ EMPTY_SECONDS_BEFORE_NEW_TIMELINE = 60
 
 TIMELINE_FPS = 25
 
-EVENT_MARKER_TRACK = (8, "Event Marker")
-RMCAM_TRACK = (7, "RM Cam")
-DOCCAM_TRACK = (6, "Doc Cam")
-SOFECAM_TRACK = (5, "SO FE Cam")
-EO_ACT_TRACK = (4, "EO Active")
-EO_OPP_TRACK = (3, "EO Opposite")
-MCC_TRACK = (2, "MCC")
+EVENT_MARKER_TRACK = (11, "Event Marker")
+RMCAM_TRACK = (10, "RM Cam")
+DOCCAM_TRACK = (9, "Doc Cam")
+SOFECAM_TRACK = (8, "SO FE Cam")
+TAIL_TRACK = (7, "Tail")
+MCC_TRACK = (6, "MCC")
+OPLS_TRACK = (5, "OPLS")
+HOISTCAM_TRACK = (4, "Hoist")
+EO_ACT_TRACK = (3, "EO Active")
+EO_OPP_TRACK = (2, "EO Opposite")
 QUAD_TRACK = (1, "Quad")
 
 PILOT_TRACK = (1, "Pilot")

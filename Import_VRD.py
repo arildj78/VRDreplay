@@ -124,6 +124,9 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.AddTrack("video")
         timeline.AddTrack("video")
         timeline.AddTrack("video")
+        timeline.AddTrack("video")
+        timeline.AddTrack("video")
+        timeline.AddTrack("video")
         timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
@@ -137,9 +140,12 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.SetTrackName("video", prefs.RMCAM_TRACK[0], prefs.RMCAM_TRACK[1])
         timeline.SetTrackName("video", prefs.DOCCAM_TRACK[0], prefs.DOCCAM_TRACK[1])
         timeline.SetTrackName("video", prefs.SOFECAM_TRACK[0], prefs.SOFECAM_TRACK[1])
+        timeline.SetTrackName("video", prefs.TAIL_TRACK[0], prefs.TAIL_TRACK[1])
+        timeline.SetTrackName("video", prefs.MCC_TRACK[0], prefs.MCC_TRACK[1])
+        timeline.SetTrackName("video", prefs.OPLS_TRACK[0], prefs.OPLS_TRACK[1])
+        timeline.SetTrackName("video", prefs.HOISTCAM_TRACK[0], prefs.HOISTCAM_TRACK[1])
         timeline.SetTrackName("video", prefs.EO_ACT_TRACK[0], prefs.EO_ACT_TRACK[1])
         timeline.SetTrackName("video", prefs.EO_OPP_TRACK[0], prefs.EO_OPP_TRACK[1])
-        timeline.SetTrackName("video", prefs.MCC_TRACK[0], prefs.MCC_TRACK[1])
         timeline.SetTrackName("video", prefs.QUAD_TRACK[0], prefs.QUAD_TRACK[1])
         
         timeline.SetTrackName("audio",prefs.PILOT_TRACK[0], prefs.PILOT_TRACK[1])
@@ -156,10 +162,13 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.SetTrackEnable("video", prefs.RMCAM_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.DOCCAM_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.SOFECAM_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.TAIL_TRACK[0], False)
+        timeline.SetTrackEnable("video", prefs.MCC_TRACK[0], False)
+        timeline.SetTrackEnable("video", prefs.OPLS_TRACK[0], False)
+        timeline.SetTrackEnable("video", prefs.HOISTCAM_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.EO_ACT_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.EO_OPP_TRACK[0], False)
-        timeline.SetTrackEnable("video", prefs.MCC_TRACK[0], True)
-        timeline.SetTrackEnable("video", prefs.QUAD_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.QUAD_TRACK[0], False)
 
         timeline.SetTrackEnable("audio", prefs.PILOT_TRACK[0], True)
         timeline.SetTrackEnable("audio", prefs.COPILOT_TRACK[0], False)
@@ -174,16 +183,19 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
 
 def LockAllTracks(timeline):
         #Set the all tracks to locked
-        a = timeline.SetTrackLock("video", prefs.EVENT_MARKER_TRACK[0], True)
-        b = timeline.SetTrackLock("video", prefs.EO_ACT_TRACK[0], True)
-        c = timeline.SetTrackLock("video", prefs.EO_OPP_TRACK[0], True)
-        d = timeline.SetTrackLock("video", prefs.MCC_TRACK[0], True)
-        e = timeline.SetTrackLock("video", prefs.QUAD_TRACK[0], True)
+        timeline.SetTrackLock("video", prefs.EVENT_MARKER_TRACK[0], True)
+        timeline.SetTrackLock("video", prefs.TAIL_TRACK[0], True)
+        timeline.SetTrackLock("video", prefs.OPLS_TRACK[0], True)
+        timeline.SetTrackLock("video", prefs.HOISTCAM_TRACK[0], True)
+        timeline.SetTrackLock("video", prefs.EO_ACT_TRACK[0], True)
+        timeline.SetTrackLock("video", prefs.EO_OPP_TRACK[0], True)
+        timeline.SetTrackLock("video", prefs.MCC_TRACK[0], True)
+        timeline.SetTrackLock("video", prefs.QUAD_TRACK[0], True)
 
-        f = timeline.SetTrackLock("audio", prefs.PILOT_TRACK[0], True)
-        g = timeline.SetTrackLock("audio", prefs.COPILOT_TRACK[0], True)
-        h = timeline.SetTrackLock("audio", prefs.SO_TRACK[0], True)
-        i = timeline.SetTrackLock("audio", prefs.FE_TRACK[0], True)
+        timeline.SetTrackLock("audio", prefs.PILOT_TRACK[0], True)
+        timeline.SetTrackLock("audio", prefs.COPILOT_TRACK[0], True)
+        timeline.SetTrackLock("audio", prefs.SO_TRACK[0], True)
+        timeline.SetTrackLock("audio", prefs.FE_TRACK[0], True)
 
 
 def createProject(memo=None):
@@ -308,6 +320,67 @@ def createProject(memo=None):
             tl.timeline.CreateCompoundClip(mcc_items, mcc_clip_info)
             tl.timeline.CreateCompoundClip(eo_opp_items, eo_opp_clip_info)
             tl.timeline.CreateCompoundClip(eo_act_items, eo_act_clip_info)
+
+            #Prepare quad data for duplication into separate tracks
+            quad_start_frame = quad_compound.GetStart()
+            quad_mediapool_item = quad_compound.GetMediaPoolItem()
+            
+            #Add Hoist cam track (duplicate of quad, cropped and scaled)
+            hoist_clip = {
+                    "mediaPoolItem" : quad_mediapool_item,     #The media file to be inserted
+                    "trackIndex" : prefs.HOISTCAM_TRACK[0],    #Track to insert the media in              e.g. 4
+                    "recordFrame" : quad_start_frame           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
+                    }
+            hoist_timelineitem = mediaPool.AppendToTimeline( [hoist_clip] )
+            hoist_timelineitem[0].SetProperty({'Pan': -287.0,         'Tilt': -1079.0,
+                                               'ZoomX': 0.65,        'ZoomY': 0.65,
+                                               'AnchorPointX': -673.0, 'AnchorPointY': 540.0,
+                                               'RotationAngle': 90.0,
+                                               'CropLeft': 256.0,
+                                               'CropRight': 1012.0,
+                                               'CropTop': 0.0,
+                                               'CropBottom': 548.0}
+                                               )
+
+            
+            #Add OPLS track (duplicate of quad, cropped and scaled)
+            opls_clip = {
+                    "mediaPoolItem" : quad_mediapool_item,     #The media file to be inserted
+                    "trackIndex" : prefs.OPLS_TRACK[0],        #Track to insert the media in              e.g. 4
+                    "recordFrame" : quad_start_frame           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
+                    }
+            opls_timelineitem = mediaPool.AppendToTimeline( [opls_clip] )            
+            opls_timelineitem[0].SetProperty({'Pan': -1122.0,           'Tilt': 324.0,
+                                              'ZoomX': 0.690,        'ZoomY': 0.690,
+                                              'AnchorPointX': 334.0, 'AnchorPointY': -258.0,
+                                              'RotationAngle': 0.0,
+                                              'CropLeft': 1083.0,
+                                              'CropRight': 409.0,
+                                              'CropTop': 537.0,
+                                              'CropBottom': 9.0,
+                                              'CompositeMode': resolve.COMPOSITE_SCREEN }
+                                              )
+
+
+            #Add Tail track (duplicate of quad, cropped and scaled)
+            tail_clip = {
+                    "mediaPoolItem" : quad_mediapool_item,     #The media file to be inserted
+                    "trackIndex" : prefs.TAIL_TRACK[0],        #Track to insert the media in              e.g. 4
+                    "recordFrame" : quad_start_frame           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
+                    }
+            tail_timelineitem = mediaPool.AppendToTimeline( [tail_clip] )            
+            tail_timelineitem[0].SetProperty({'Pan': -256.0,           'Tilt': 535.0,
+                                              'ZoomX': 0.535,        'ZoomY': 0.535,
+                                              'AnchorPointX': -704.0, 'AnchorPointY': 4.0,
+                                              'RotationAngle': 0.0,
+                                              'CropLeft': 257.0,
+                                              'CropRight': 1012.0,
+                                              'CropTop': 537.0,
+                                              'CropBottom': 12.0 }
+                                              )
+
+
+
 
             #Join all audio clips in each video track to a new compound clip
             pilot_items   = tl.timeline.GetItemListInTrack(prefs.TrackType.AUDIO,  prefs.PILOT_TRACK[0])
