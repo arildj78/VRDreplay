@@ -11,11 +11,13 @@ class Frame:
     nanosec: int
     nanoTime: int
     ms_since_last_frame: float
+    correctionFrames: int #0=No correction. 1=Correct for a short frame(~0 ms)   -1=Correct for a long frame (80 ms)
     data: list[int]
 
     def __init__(self) -> None:
         self.data = []
         self.ms_since_last_frame = -1
+        self.correctionFrames = 0
 
 
     def __str__(self) -> str:
@@ -24,6 +26,10 @@ class Frame:
                   "%d" % self.nanoTime + '\t' +
                   "%.2f" % self.ms_since_last_frame)
         return result
+    
+    def __lt__(self, other):
+        return self.frameNumber < other.frameNumber
+    
  
 class SubClip:
     framerate: float
@@ -144,7 +150,20 @@ def ReadTag(tagFile:str, trackType:prefs.TrackType) -> list[SubClip]:
 
     #Extract the frames with duration below 20ms
     missingFrames = [x for x in frames if x.ms_since_last_frame < 20]
+    longFrames = [x for x in frames if x.ms_since_last_frame > 60]
+    longFrames.pop(0) #Remove first entry. This is a frame that has infinate duration because there was no frame in front
 
+    #Number to be used below when calculating previousEndFrame 
+    for frame in missingFrames:
+        frame.correctionFrames = 1
+
+    #Number to be used below when calculating previousEndFrame 
+    for frame in longFrames:
+        frame.correctionFrames = -1
+
+    weirdFrames = missingFrames + longFrames
+    weirdFrames.sort()
+    
 
     subClip : SubClip
     subClips : list[SubClip]
@@ -160,7 +179,8 @@ def ReadTag(tagFile:str, trackType:prefs.TrackType) -> list[SubClip]:
     previousEndFrame = -1
     recordFrameFirst = 0
 
-    for frame in missingFrames:
+
+    for frame in weirdFrames:
         subClip = SubClip(clipFirstFrame = clipFirstFrame,  
                           startFrame = previousEndFrame + 1,  #Startframe is inclusive)
                           endFrame = frame.frameNumber - 1,
@@ -169,7 +189,7 @@ def ReadTag(tagFile:str, trackType:prefs.TrackType) -> list[SubClip]:
                           startNanoSec = frame.nanosec)  
 
         recordFrameFirst = recordFrameFirst + subClip.frameCount
-        previousEndFrame = subClip.endFrame + 1  #The +1 will skip the bad frame
+        previousEndFrame = subClip.endFrame + frame.correctionFrames  #The +1 will skip the bad frame
         
         subClips.append(subClip)
 
