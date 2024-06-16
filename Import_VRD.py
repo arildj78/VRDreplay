@@ -309,17 +309,8 @@ def createProject(memo=None):
                     "recordFrame" : subClip.clipFirstFrame + subClip.recordFrameFirst,   #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
                     "recordFrameEnd" :  subClip.clipFirstFrame + subClip.recordFrameLast #For debugging. The last frame on the timeline occupied by the clip
                 }
-                # print(media.tagFile + '\t' +
-                #         str(newClip["trackIndex"]).ljust(10) + '\t' + 
-                #         str(newClip["recordFrame"]).ljust(14) + '\t' + 
-                #         str(newClip["startFrame"]).ljust(10) + '\t' + 
-                #         str(newClip["endFrame"]).ljust(8) + '\t' + 
-                #         str(subClip.frameCount).ljust(10) + '\t' +
-                #         str(newClip["recordFrameEnd"]).ljust(12))
                 mediaPool.AppendToTimeline( [newClip] )
-            # print()
-            # print()
-        
+
         
         mediaPool.SetCurrentFolder(graphics_folder)
         markerClip = CreateEventMarkerClip(proj)
