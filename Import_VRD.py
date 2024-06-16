@@ -1,6 +1,7 @@
 import prefs
 from getAllMedia import GetAllMedia
 from event import GetUniqueEvents, CreateEventMarkerClip, InsertEventMarkerClip
+from timeofday import CreateTimeOfDayClip
 from prefs import MarkerColor
 import daVinciConnection
 
@@ -127,6 +128,7 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         timeline.AddTrack("video")
         timeline.AddTrack("video")
         timeline.AddTrack("video")
+        timeline.AddTrack("video")
         timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
         timeline.AddTrack("audio", "stereo")
@@ -137,6 +139,7 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
 
         #Set the names of tracks
         timeline.SetTrackName("video", prefs.EVENT_MARKER_TRACK[0], prefs.EVENT_MARKER_TRACK[1])
+        timeline.SetTrackName("video", prefs.TIME_TRACK[0], prefs.TIME_TRACK[1])
         timeline.SetTrackName("video", prefs.RMCAM_TRACK[0], prefs.RMCAM_TRACK[1])
         timeline.SetTrackName("video", prefs.DOCCAM_TRACK[0], prefs.DOCCAM_TRACK[1])
         timeline.SetTrackName("video", prefs.SOFECAM_TRACK[0], prefs.SOFECAM_TRACK[1])
@@ -159,6 +162,7 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
         
         #Set the visibility of tracks.
         timeline.SetTrackEnable("video", prefs.EVENT_MARKER_TRACK[0], True)
+        timeline.SetTrackEnable("video", prefs.TIME_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.RMCAM_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.DOCCAM_TRACK[0], True)
         timeline.SetTrackEnable("video", prefs.SOFECAM_TRACK[0], True)
@@ -184,6 +188,7 @@ def createNewTimeline(mediaPool, name, unixStartTime:int):
 def LockAllTracks(timeline):
         #Set the all tracks to locked
         timeline.SetTrackLock("video", prefs.EVENT_MARKER_TRACK[0], True)
+        timeline.SetTrackLock("video", prefs.TIME_TRACK[0], True)
         timeline.SetTrackLock("video", prefs.TAIL_TRACK[0], True)
         timeline.SetTrackLock("video", prefs.OPLS_TRACK[0], True)
         timeline.SetTrackLock("video", prefs.HOISTCAM_TRACK[0], True)
@@ -397,6 +402,15 @@ def createProject(memo=None):
                                               'CropBottom': 12.0 }
                                               )
 
+            #Add time of day on Time Track
+            tod_mediaPool_item = CreateTimeOfDayClip(proj)
+            tod_clip = {
+                    "mediaPoolItem" : tod_mediaPool_item,     #The media file to be inserted
+                    "trackIndex" : prefs.TIME_TRACK[0],        #Track to insert the media in              e.g. 4
+                    "recordFrame" : quad_start_frame,           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
+                    "recordFrameEnd" :  quad_start_frame + 180000 #For debugging. The last frame on the timeline occupied by the clip
+                    }
+            tod_timelineitem = mediaPool.AppendToTimeline( [tod_clip] )            
 
 
 
