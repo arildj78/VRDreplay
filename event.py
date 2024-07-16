@@ -2,7 +2,7 @@ import struct, os
 from datetime import datetime
 import re #regEx library
 import daVinciConnection
-
+from findUSBdevice import get_vrdDrives
 import prefs
 
 from timeline import Timeline
@@ -93,7 +93,11 @@ class EvtFile:
 
 
 
-def GetUniqueEvents(directories=prefs.RECORDING_DIRECTORIES) -> list[Event]:
+def GetUniqueEvents(directories = None) -> list[Event]:
+    if directories == None:
+        directories = get_vrdDrives()
+
+
     #Initialize an empty list to hold a reference to the media files beeing imported
     events: list[Event] = []
 

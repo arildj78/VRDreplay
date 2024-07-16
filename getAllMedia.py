@@ -9,7 +9,7 @@ from mediaClip import MediaClip
 from readTag import ReadTag
 import reverseRead
 from tqdm import tqdm
-
+from findUSBdevice import get_vrdDrives
 
 
 #Read start time from start of tag file and stop time from end of tag file
@@ -44,8 +44,10 @@ def get_clip_start_stop_time(tagFile:str):
 
 
 
-def GetAllMedia(directories=prefs.RECORDING_DIRECTORIES) -> list[MediaClip]:
+def GetAllMedia(directories = None) -> list[MediaClip]:
 
+    if directories == None:
+        directories = get_vrdDrives()
     #Initialize an empty list to hold a reference to the media files beeing imported
     mediaFiles: list[MediaClip] = []
 

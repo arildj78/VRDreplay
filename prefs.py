@@ -53,10 +53,7 @@ class MarkerColor():
 	COCOA    = "Cocoa"
 	CREAM    = "Cream"
 
-
-RECORDING_DIRECTORIES = [
-    'D:\\vrd_database' ,
-]
+DATABASE_DIRECTORY = 'vrd_database'
 
 FUSION_COMPOSITION_SUBFOLDER = 'fusionComposition'
 EVENTMARKER_FUSION_COMPOSITION_FILE = 'event.comp'
