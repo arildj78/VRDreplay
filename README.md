@@ -69,6 +69,7 @@ There seems to be multiple problems with the .mkv video files. The following are
 * For files in the Recovered_Segments folder, the file header is missing segment size
 * Missing frames
 * Codec issue during playback
+* QUAD video has a timing issue
 
 ## Duration
 *Segment information -> Duration (element ID 0x4489)* is one frame too short. Typically each video file is 7500 frames but duration is set to 7499. The duration is given in ticks as a double and seems to be 1ms per tick. The exact value for ticks can be found in *Segment information -> Timestamp scale (element ID 0x2AD7B1)* and is given in nanoseconds per tick. This script will assume 1ms pr tick and increase the duration of every file with 40ms to reveal the lost frame at the end of the clip.
@@ -104,6 +105,16 @@ The following has been observed when playing back the video files
 | VLC                    | 3.0.18             | Garbled image on lower half of the video. ***SOLVED*** by disabling hardware acceleration in settings                    |
 | DaVinci Resolve (Free) | 18.1.4             | The missing frame is rendered as a red banner with the text **Media Offline**, the following frames are rendered correct |
 | DaVinci Resolve Studio | 18.1.4             | The missing frame is rendered as a solid grey frame, the following 5 frames are rendered grey with small artifacts       |
+
+## QUAD video has a timing issue
+Occasionally the quad video has a timing issue. It seems like the video is split into the normal 7500 frames per file but instead of the normal 5 minutes it contains 6 minutes of material, resulting in 20.83 frames per second. When edited in a video editor with 25fps the video needs to be slowed down to 83.333%.
+
+It is not known if the problem is always exactly 6 minutes of video in a 5 minute file or if the timing differs between sorties. Normally though, the quad video is exactly 5 minutes with 7500 frames.
+
+In one sortie the problem was exactly 360 seconds per 7500 frames. No problem on the sortie before or after.
+
+By investigating one of the .tag files from that sortie it seems that there are four frames of duration 40ms before one frame of duration 80ms. This patterns seems to be repeating.
+
 
 ## Credit
 * [Finding drive letter from VID/PID with C++](https://itecnote.com/tecnote/c-find-and-eject-a-usb-device-based-on-its-vid-pid/)
