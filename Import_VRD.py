@@ -241,7 +241,7 @@ def createProject(memo=None):
         
         for media in tqdm(allMedia): #tqdm creates a progress bar while iterating through allMedia
 
-
+            
 
             if media.startOfTimeline:
                 timeLineCounter = timeLineCounter + 1
@@ -299,7 +299,27 @@ def createProject(memo=None):
             #print("Filename".ljust(53) + '\t' + "trackIndex" + '\t' + "Timeline start" + '\t' + "startFrame" + '\t' + "endFrame" + '\t' + "frameCount" + '\t' + "Timeline end")
             #print("----------------------------------------------------------------------------------------------------------------------------------------------------")
 
+            print(len(media.subClips))
+            if len(media.subClips) > prefs.MAX_NUMBER_OF_SUBCLIPS_BEFORE_APPLYING_SPEED_CORRECTION:
+                a = medieaPoolItem[0].GetClipProperty()
+                b = medieaPoolItem[0].SetClipProperty('FPS', "20")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "21")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "22")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "23")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "24")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "25")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "26")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "27")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "28")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "29")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "30")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "29.97")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "20,8")
+                b = medieaPoolItem[0].SetClipProperty('FPS', "20.8")
+                c = medieaPoolItem[0].GetClipProperty()
+                
 
+            
             for subClip in media.subClips:
                 newClip = {
                     "mediaPoolItem" : medieaPoolItem[0],                                 #The media file to be inserted

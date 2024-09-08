@@ -57,6 +57,13 @@ DATABASE_DIRECTORY = 'vrd_database'
 
 FUSION_COMPOSITION_SUBFOLDER = 'fusionComposition'
 EVENTMARKER_FUSION_COMPOSITION_FILE = 'event.comp'
+
+# If there are more subclips in a media file than set by this constant, all subclips are ignored and
+# instead a speed correction is applied to the media file. This is related to the problem with QUAD 
+# videofiles with wrong framerate. Issue #2 on GitHub. If quad video files with wrong framerate is
+# encountered a 5 min clip will be divided into aprx 1500 subclips.
+MAX_NUMBER_OF_SUBCLIPS_BEFORE_APPLYING_SPEED_CORRECTION = 50
+
 # Match filenames of the following format EO_ACT_0000_000.mkv (The $ ensures that the filename ends with .mkv)
 
 #*********************
