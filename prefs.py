@@ -62,7 +62,7 @@ EVENTMARKER_FUSION_COMPOSITION_FILE = 'event.comp'
 # instead a speed correction is applied to the media file. This is related to the problem with QUAD 
 # videofiles with wrong framerate. Issue #2 on GitHub. If quad video files with wrong framerate is
 # encountered a 5 min clip will be divided into aprx 1500 subclips.
-MAX_NUMBER_OF_SUBCLIPS_BEFORE_APPLYING_SPEED_CORRECTION = 50
+MAX_NUMBER_OF_SUBCLIPS_BEFORE_APPLYING_SPEED_CORRECTION = 25000 #50 should be set when this is fully implemented   #A very high number effectivly disables the function.
 
 # Match filenames of the following format EO_ACT_0000_000.mkv (The $ ensures that the filename ends with .mkv)
 
