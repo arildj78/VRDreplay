@@ -167,7 +167,7 @@ def CreateEventMarkerClip(project):
     # This file can be modified by creating a new composition and then copying it by selecting all the nodes, Ctrl-C and
     # then pasting it into the file before saving it.
     #with open("C:\\Users\\arild\\AppData\\Roaming\\Blackmagic Design\\DaVinci Resolve\\Support\\Fusion\\Scripts\\Comp\\VRDreplay\\event.comp") as file:
-    with open(os.path.dirname(__file__) + "\\fusionComposition\event.comp") as file:
+    with open(os.path.dirname(__file__) + "\\fusionComposition\\event.comp") as file:
         data = file.read()
 
     #Put the composition on the clipboard
