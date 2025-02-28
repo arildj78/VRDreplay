@@ -161,7 +161,8 @@ def ReadTag(tagFile:str, trackType:prefs.TrackType) -> list[SubClip]:
     for frame in longFrames:
         frame.correctionFrames = -1
 
-    weirdFrames = missingFrames + longFrames
+    #weirdFrames = missingFrames + longFrames
+    weirdFrames = missingFrames
     weirdFrames.sort()
     
 
