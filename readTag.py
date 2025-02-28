@@ -161,7 +161,13 @@ def ReadTag(tagFile:str, trackType:prefs.TrackType) -> list[SubClip]:
     for frame in longFrames:
         frame.correctionFrames = -1
 
-    weirdFrames = missingFrames + longFrames
+    if len(longFrames) > 50:
+        print(tagFile, "has many long frames: ", len(longFrames))
+
+    #weirdFrames = missingFrames + longFrames 
+    weirdFrames = missingFrames #TODO - add longframes back in. It has been removed to speed up import until a more efficient solution is developed.
+
+
     weirdFrames.sort()
     
 
