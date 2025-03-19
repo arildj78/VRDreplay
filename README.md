@@ -4,18 +4,16 @@ Script for DaVinci Resolve to import and sync audio and video from the 101
 ## Prerequisite
 Version tested in parenthesis
 * DaVinci Resolve Studio (18.1 build 16)
-* Python (3.10.10) and (3.11.1)
-* pip install pywin32
-* [PyUSB](https://github.com/pyusb/pyusb)
-* [libusb-package](https://github.com/pyocd/libusb-package)
+* Python (3.10.10) and (3.11.1)(3.13.2)
+* pip install pywin32 (for å gi win32gui)
 * Create a Project setting named **Debrief** in Resolve
 * Create a UI Layout named **Debrief** in Resolve
 
 ## Installation
 * Clone or copy the script to the folder
-`C:\Users\username\AppData\Roaming\Blackmagic Design\DaVinci Resolve\Support\Fusion\Scripts\Comp\VRDreplay`
+`C:\VRDreplay`
 * Change DaVinci Resolve setting `DaVinci Resolve -> Preferences... -> General -> System -> External scripting using` to `Local` or `Network`
-* Create a Windows shortcut to **python.exe "C:\\..\\Import_VRD.py"** with icon set to Helicopter.ico
+* On the Windows desktop, create a Windows shortcut to **python.exe "C:\\..\\Import_VRD.py"** with icon set to Helicopter.ico
 
 ### Windows environment variables set to
 * PYTHONPATH = C:\ProgramData\Blackmagic Design\DaVinci Resolve\Support\Developer\Scripting\Modules
@@ -23,7 +21,7 @@ Version tested in parenthesis
 *  RESOLVE_SCRIPT_LIB = C:\Program Files\Blackmagic Design\DaVinci Resolve\fusionscript.dll
 
 ## Description
-The script is available through the menu `Workspace -> Scripts -> Comp -> VRDreplay -> Import_VRD`. Invoking the script will automatically locate the VRD disk connected to the USB adapter and create a new project with a timeline containing all the recordings. If there is a significant period without recordings (multiple sorties) additional timelines will be created.
+The script is available through the helicopter shortcut created on the desktop. Invoking the script will automatically locate the VRD disk connected to the USB adapter and create a new project with a timeline containing all the recordings. If there is a significant period without recordings (multiple sorties) additional timelines will be created.
 
 ## Programming reference
 While writing this script, the following references have been used (not an exhaustive list)
