@@ -397,29 +397,29 @@ def createProject(memo=None):
                                                     'CropBottom': 9.0,
                                                     'CompositeMode': resolve.COMPOSITE_SCREEN }
                                                     )
+
+
+
+
+                    #Add Tail track (duplicate of quad, cropped and scaled)
+                    tail_clip = {
+                            "mediaPoolItem" : quad_mediapool_item,     #The media file to be inserted
+                            "trackIndex" : prefs.TAIL_TRACK[0],        #Track to insert the media in              e.g. 4
+                            "recordFrame" : quad_start_frame           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
+                            }
+                    tail_timelineitem = mediaPool.AppendToTimeline( [tail_clip] )            
+                    tail_timelineitem[0].SetProperty({'Pan': -256.0,           'Tilt': 535.0,
+                                                    'ZoomX': 0.535,        'ZoomY': 0.535,
+                                                    'AnchorPointX': -704.0, 'AnchorPointY': 4.0,
+                                                    'RotationAngle': 0.0,
+                                                    'CropLeft': 257.0,
+                                                    'CropRight': 1012.0,
+                                                    'CropTop': 537.0,
+                                                    'CropBottom': 12.0 }
+                                                    )
+
                 except:
                     pass
-
-
-
-            #Add Tail track (duplicate of quad, cropped and scaled)
-            tail_clip = {
-                    "mediaPoolItem" : quad_mediapool_item,     #The media file to be inserted
-                    "trackIndex" : prefs.TAIL_TRACK[0],        #Track to insert the media in              e.g. 4
-                    "recordFrame" : quad_start_frame           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
-                    }
-            tail_timelineitem = mediaPool.AppendToTimeline( [tail_clip] )            
-            tail_timelineitem[0].SetProperty({'Pan': -256.0,           'Tilt': 535.0,
-                                              'ZoomX': 0.535,        'ZoomY': 0.535,
-                                              'AnchorPointX': -704.0, 'AnchorPointY': 4.0,
-                                              'RotationAngle': 0.0,
-                                              'CropLeft': 257.0,
-                                              'CropRight': 1012.0,
-                                              'CropTop': 537.0,
-                                              'CropBottom': 12.0 }
-                                              )
-
-
 
             # #Add time of day on Time Track
             # tod_mediaPool_item = CreateTimeOfDayClip(proj)
