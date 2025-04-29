@@ -421,15 +421,15 @@ def createProject(memo=None):
 
 
 
-            #Add time of day on Time Track
-            tod_mediaPool_item = CreateTimeOfDayClip(proj)
-            tod_clip = {
-                    "mediaPoolItem" : tod_mediaPool_item,     #The media file to be inserted
-                    "trackIndex" : prefs.TIME_TRACK[0],        #Track to insert the media in              e.g. 4
-                    "recordFrame" : quad_start_frame,           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
-                    "recordFrameEnd" :  quad_start_frame + 180000 #For debugging. The last frame on the timeline occupied by the clip
-                    }
-            tod_timelineitem = mediaPool.AppendToTimeline( [tod_clip] )            
+            # #Add time of day on Time Track
+            # tod_mediaPool_item = CreateTimeOfDayClip(proj)
+            # tod_clip = {
+            #         "mediaPoolItem" : tod_mediaPool_item,     #The media file to be inserted
+            #         "trackIndex" : prefs.TIME_TRACK[0],        #Track to insert the media in              e.g. 4
+            #         "recordFrame" : quad_start_frame,           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
+            #         "recordFrameEnd" :  quad_start_frame + 180000 #For debugging. The last frame on the timeline occupied by the clip
+            #         }
+            # tod_timelineitem = mediaPool.AppendToTimeline( [tod_clip] )            
 
 
 
