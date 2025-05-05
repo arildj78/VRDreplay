@@ -9,6 +9,9 @@ Version tested in parenthesis
 * Create a Project setting named **Debrief** in Resolve
 * Create a UI Layout named **Debrief** in Resolve
 
+## Remote desktup
+Support gis fra andre baser med programmet RustDesk. Dette lastes ned fra https://rustdesk.com/ og installeres. Innstillinger  fås på forespørsel fra base Bodø.
+
 ## Installation
 * Clone or copy the script to the folder
 `C:\VRDreplay`
