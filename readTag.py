@@ -161,6 +161,7 @@ def ReadTag(tagFile:str, trackType:prefs.TrackType) -> list[SubClip]:
     for frame in longFrames:
         frame.correctionFrames = -1
 
+
     if len(longFrames) > 50:
         print(tagFile, "has many long frames: ", len(longFrames))
 

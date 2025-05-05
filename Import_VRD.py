@@ -350,78 +350,86 @@ def createProject(memo=None):
             mcc_clip_info       = {"name" : prefs.MCC_TRACK[1]    + '_' + tl.name}
             eo_opp_clip_info    = {"name" : prefs.EO_OPP_TRACK[1] + '_' + tl.name}
             eo_act_clip_info    = {"name" : prefs.EO_ACT_TRACK[1] + '_' + tl.name}
-            quad_compound = tl.timeline.CreateCompoundClip(quadtrack_items, quadtrack_clip_info)
             tl.timeline.CreateCompoundClip(mcc_items, mcc_clip_info)
             tl.timeline.CreateCompoundClip(eo_opp_items, eo_opp_clip_info)
             tl.timeline.CreateCompoundClip(eo_act_items, eo_act_clip_info)
 
-            #Prepare quad data for duplication into separate tracks
-            quad_start_frame = quad_compound.GetStart()
-            quad_mediapool_item = quad_compound.GetMediaPoolItem()
-            
-            #Add Hoist cam track (duplicate of quad, cropped and scaled)
-            hoist_clip = {
-                    "mediaPoolItem" : quad_mediapool_item,     #The media file to be inserted
-                    "trackIndex" : prefs.HOISTCAM_TRACK[0],    #Track to insert the media in              e.g. 4
-                    "recordFrame" : quad_start_frame           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
-                    }
-            hoist_timelineitem = mediaPool.AppendToTimeline( [hoist_clip] )
-            hoist_timelineitem[0].SetProperty({'Pan': -287.0,         'Tilt': -1079.0,
-                                               'ZoomX': 0.65,        'ZoomY': 0.65,
-                                               'AnchorPointX': -673.0, 'AnchorPointY': 540.0,
-                                               'RotationAngle': 90.0,
-                                               'CropLeft': 256.0,
-                                               'CropRight': 1012.0,
-                                               'CropTop': 0.0,
-                                               'CropBottom': 548.0}
-                                               )
+            if len(quadtrack_items) > 0:
+                try:
+                    quad_compound = tl.timeline.CreateCompoundClip(quadtrack_items, quadtrack_clip_info)
 
-            
-            #Add OPLS track (duplicate of quad, cropped and scaled)
-            opls_clip = {
-                    "mediaPoolItem" : quad_mediapool_item,     #The media file to be inserted
-                    "trackIndex" : prefs.OPLS_TRACK[0],        #Track to insert the media in              e.g. 4
-                    "recordFrame" : quad_start_frame           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
-                    }
-            opls_timelineitem = mediaPool.AppendToTimeline( [opls_clip] )            
-            opls_timelineitem[0].SetProperty({'Pan': -1122.0,           'Tilt': 324.0,
-                                              'ZoomX': 0.690,        'ZoomY': 0.690,
-                                              'AnchorPointX': 334.0, 'AnchorPointY': -258.0,
-                                              'RotationAngle': 0.0,
-                                              'CropLeft': 1083.0,
-                                              'CropRight': 409.0,
-                                              'CropTop': 537.0,
-                                              'CropBottom': 9.0,
-                                              'CompositeMode': resolve.COMPOSITE_SCREEN }
-                                              )
+                    #Prepare quad data for duplication into separate tracks
+                    quad_start_frame = quad_compound.GetStart()
+                    quad_mediapool_item = quad_compound.GetMediaPoolItem()
+                    
+                    #Add Hoist cam track (duplicate of quad, cropped and scaled)
+                    hoist_clip = {
+                            "mediaPoolItem" : quad_mediapool_item,     #The media file to be inserted
+                            "trackIndex" : prefs.HOISTCAM_TRACK[0],    #Track to insert the media in              e.g. 4
+                            "recordFrame" : quad_start_frame           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
+                            }
+                    hoist_timelineitem = mediaPool.AppendToTimeline( [hoist_clip] )
+                    hoist_timelineitem[0].SetProperty({'Pan': -287.0,         'Tilt': -1079.0,
+                                                    'ZoomX': 0.65,        'ZoomY': 0.65,
+                                                    'AnchorPointX': -673.0, 'AnchorPointY': 540.0,
+                                                    'RotationAngle': 90.0,
+                                                    'CropLeft': 256.0,
+                                                    'CropRight': 1012.0,
+                                                    'CropTop': 0.0,
+                                                    'CropBottom': 548.0}
+                                                    )
+
+                    
+                    #Add OPLS track (duplicate of quad, cropped and scaled)
+                    opls_clip = {
+                            "mediaPoolItem" : quad_mediapool_item,     #The media file to be inserted
+                            "trackIndex" : prefs.OPLS_TRACK[0],        #Track to insert the media in              e.g. 4
+                            "recordFrame" : quad_start_frame           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
+                            }
+                    opls_timelineitem = mediaPool.AppendToTimeline( [opls_clip] )            
+                    opls_timelineitem[0].SetProperty({'Pan': -1122.0,           'Tilt': 324.0,
+                                                    'ZoomX': 0.690,        'ZoomY': 0.690,
+                                                    'AnchorPointX': 334.0, 'AnchorPointY': -258.0,
+                                                    'RotationAngle': 0.0,
+                                                    'CropLeft': 1083.0,
+                                                    'CropRight': 409.0,
+                                                    'CropTop': 537.0,
+                                                    'CropBottom': 9.0,
+                                                    'CompositeMode': resolve.COMPOSITE_SCREEN }
+                                                    )
 
 
-            #Add Tail track (duplicate of quad, cropped and scaled)
-            tail_clip = {
-                    "mediaPoolItem" : quad_mediapool_item,     #The media file to be inserted
-                    "trackIndex" : prefs.TAIL_TRACK[0],        #Track to insert the media in              e.g. 4
-                    "recordFrame" : quad_start_frame           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
-                    }
-            tail_timelineitem = mediaPool.AppendToTimeline( [tail_clip] )            
-            tail_timelineitem[0].SetProperty({'Pan': -256.0,           'Tilt': 535.0,
-                                              'ZoomX': 0.535,        'ZoomY': 0.535,
-                                              'AnchorPointX': -704.0, 'AnchorPointY': 4.0,
-                                              'RotationAngle': 0.0,
-                                              'CropLeft': 257.0,
-                                              'CropRight': 1012.0,
-                                              'CropTop': 537.0,
-                                              'CropBottom': 12.0 }
-                                              )
 
-            #Add time of day on Time Track
-            tod_mediaPool_item = CreateTimeOfDayClip(proj)
-            tod_clip = {
-                    "mediaPoolItem" : tod_mediaPool_item,     #The media file to be inserted
-                    "trackIndex" : prefs.TIME_TRACK[0],        #Track to insert the media in              e.g. 4
-                    "recordFrame" : quad_start_frame,           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
-                    "recordFrameEnd" :  quad_start_frame + 180000 #For debugging. The last frame on the timeline occupied by the clip
-                    }
-            tod_timelineitem = mediaPool.AppendToTimeline( [tod_clip] )            
+
+                    #Add Tail track (duplicate of quad, cropped and scaled)
+                    tail_clip = {
+                            "mediaPoolItem" : quad_mediapool_item,     #The media file to be inserted
+                            "trackIndex" : prefs.TAIL_TRACK[0],        #Track to insert the media in              e.g. 4
+                            "recordFrame" : quad_start_frame           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
+                            }
+                    tail_timelineitem = mediaPool.AppendToTimeline( [tail_clip] )            
+                    tail_timelineitem[0].SetProperty({'Pan': -256.0,           'Tilt': 535.0,
+                                                    'ZoomX': 0.535,        'ZoomY': 0.535,
+                                                    'AnchorPointX': -704.0, 'AnchorPointY': 4.0,
+                                                    'RotationAngle': 0.0,
+                                                    'CropLeft': 257.0,
+                                                    'CropRight': 1012.0,
+                                                    'CropTop': 537.0,
+                                                    'CropBottom': 12.0 }
+                                                    )
+
+                except:
+                    pass
+
+            # #Add time of day on Time Track
+            # tod_mediaPool_item = CreateTimeOfDayClip(proj)
+            # tod_clip = {
+            #         "mediaPoolItem" : tod_mediaPool_item,     #The media file to be inserted
+            #         "trackIndex" : prefs.TIME_TRACK[0],        #Track to insert the media in              e.g. 4
+            #         "recordFrame" : quad_start_frame,           #The timeline location (in frames) to insert the clip at       e.g. 1 239 324 + 6000
+            #         "recordFrameEnd" :  quad_start_frame + 180000 #For debugging. The last frame on the timeline occupied by the clip
+            #         }
+            # tod_timelineitem = mediaPool.AppendToTimeline( [tod_clip] )            
 
 
 
